@@ -18,7 +18,7 @@ setup(
     author="Offensive Tooling",
     author_email="",
     description="Web Application Offensive Fuzzing Module",
-    long_description=open("README.md").read(),
+    long_description=open("README.md", encoding='utf-8').read(),
     long_description_content_type="text/markdown",
     url="https://github.com/offensive-tooling/fuzzmap",
     classifiers=[
