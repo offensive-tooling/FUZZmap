@@ -1,0 +1,30 @@
+{
+  "payloads": [
+    {
+      "payload": "'",
+      "type": "sql_injection",
+      "description": "Basic SQL injection test",
+      "detection": {
+        "type": "error_based",
+        "patterns": [
+          "SQL syntax",
+          "mysql_error",
+          "ORA-",
+          "SQLite"
+        ]
+      }
+    },
+    {
+      "payload": "<script>alert(1)</script>",
+      "type": "xss",
+      "description": "Basic XSS test",
+      "detection": {
+        "type": "reflection",
+        "patterns": [
+          "<script>",
+          "alert(1)"
+        ]
+      }
+    }
+  ]
+} 
