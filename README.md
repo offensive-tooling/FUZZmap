@@ -1,37 +1,32 @@
-# fuzzmap
-Web Application Offensive Fuzzing Module
+## fuzzmap
 
-ex 1)
-from fuzzmap import sqli
-sqli = SQLInjection(target, "be", headers=headers, cookies=cookies)
-result = sqli.run()
+### install
+`dev install` pip3 install -e .
 
-print(result)
+🔧 도구로 사용하는 경우:
 
+    fuzzmap -t http://testphp.vulnweb.com/listproducts.php -m get -p cat
+    fuzzmap -t http://testphp.vulnweb.com/listproducts.php -m get -p cat,test
+    fuzzmap -t http://testphp.vulnweb.com/listproducts.php -m post -p cat
+    fuzzmap -t http://testphp.vulnweb.com/listproducts.php -m post -p cat,test
+    fuzzmap -t http://testphp.vulnweb.com/listproducts.php -rp
 
+🐍 모듈로 사용하는 경우:
+    from fuzzmap import Controller
 
-result:
-http://testphp.vulnweb.com, blind & error sql injection attack success - payload: ' or 1=1 -- -
+    fm = Controller(target="http://testphp.vulnweb.com",method="GET",param="cat")
+    fm.run()
 
-ex 2)
-from fuzzmap import sqli, all
-all_attack = webfuzz(target, headers=headers, cookies=cookies)
-result = all_attack.run()
+    fm = Controller(target="http://testphp.vulnweb.com",recon_param=True)
+    fm.run()
 
-print(result)
+⚙️  Options:
 
+    -t, --target    🎯 Target URL to scan
+    -m, --method    📡 HTTP method (GET/POST)
+    -p, --param     🔍 Parameters to test (comma separated)
+    -rp, --recon    🔎 Enable parameter reconnaissance
+    -v, --verbose   📝 Enable verbose output
+    -h, --help      ℹ️  Show this help message
 
-result:
-http://testphp.vulnweb.com
-[+] INFO: sqli - payload ...
-[+] INFO: xss - payload ...
-[+] INFO: csrf - payload ...
-[+] INFO: lfi - payload ...
-
-공격 방식:
-전체 엔드포인트, 일부 엔드포인트, 입력한 타겟 엔드포인트만 공격 (방식 고민 중)
-
-모듈 특징: 외부 도구 또는 설정이 많이 필요한 모듈 사용 X (직접 만들어야 함)
--> requests (O) - requests는 괜찮음
--> dirsearch (X)
--> nmap (X)
+🔔 Note: Use responsibly and only on authorized targets
