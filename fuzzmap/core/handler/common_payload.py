@@ -21,13 +21,13 @@ class CommonPayload:
             self.logger.error(f"페이로드 로드 중 오류 발생: {str(e)}")
             return {}
 
-    def test(self, url: str, params: List[str]) -> Dict:
+    def test(self, url: str, params: List[str], method: str = "GET") -> Dict:
         """공통 페이로드 테스트 실행"""
         results = {}
         try:
             for param in params:
                 param_results = []
-                for payload in self.payloads:
+                for payload in self.payloads.get("payloads", []):
                     result = self._test_payload(url, param, payload)
                     if result:
                         param_results.append(result)
