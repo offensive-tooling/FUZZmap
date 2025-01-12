@@ -27,6 +27,7 @@ class Controller:
                 return {}
 
             # 공통 페이로드 테스트
+            self.logger.info(f"공통 페이로드 테스트 시작 - 대상 URL: {self.target}")
             common_results = self.common_payload.test(
                 self.target, 
                 self.params, 
