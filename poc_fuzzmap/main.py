@@ -11,7 +11,7 @@ if project_root not in sys.path:
 from poc_fuzzmap.scanner import FuzzScanner
 from poc_fuzzmap.models import *
 
-def main(url: str = "http://127.0.0.1/index.php?type=title", param: str = "search"):
+def main(url: str = "http://testphp.vulnweb.com/listproducts.php", param: str = "cat"):
     """메인 실행 함수"""
     scanner = FuzzScanner(url, param)
     
