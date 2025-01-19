@@ -39,7 +39,6 @@ class ParamReconHandler:
         }
 
     async def collect_parameters(self) -> List[Param]:
-        """모든 URL에 대해 파라미터를 비동기적으로 수집하고 반환"""
         async with aiohttp.ClientSession() as session:
             tasks = []
             for url in self._get_urls():
@@ -48,7 +47,7 @@ class ParamReconHandler:
 
             await asyncio.gather(*tasks)
 
-        await self._process_parameters()
+        await self._process_parameters()  # 여기서 _process_parameters를 호출
         return self._parameters
 
     async def _collect_url_parameters(
@@ -176,44 +175,42 @@ class ParamReconHandler:
             )
 
     async def _process_parameters(self) -> None:
-        # 중복 제거를 위한..
-        unique_params = set()
-        filtered_params = []
+        unique_params = {}
 
         for param in self._parameters:
-            param_key = (param.name, param.param_type, param.method)
-            if param_key not in unique_params:
-                unique_params.add(param_key)
-                filtered_params.append(param)
+            param_key = (param.name, param.value, param.method)
+            if param_key not in unique_params or param.param_type.startswith("form"):
+                unique_params[param_key] = param
+
+        filtered_params = list(unique_params.values())
 
         # sort by name
         self._parameters = sorted(filtered_params, key=lambda x: x.name)
 
 
-async def main():
-    # single url for test
-    url = "http://testphp.vulnweb.com/login.php"
-    paramhandler = ParamReconHandler(url)
-    params = await paramhandler.collect_parameters()
-    print("Single URL parameters:")
-    for param in params:
-        print(
-            f"Name: {param.name}, Value: {param.value}, Type: {param.param_type}, Method: {param.method}"
-        )
-
-    # multiple urls for test
-    url_lst = [
-        "http://localhost/login.php?user=admin",
-        "http://localhost/index.php",
-    ]
-    paramhandler = ParamReconHandler(url_lst)
-    params = await paramhandler.collect_parameters()
-    print("\nMultiple URL parameters:")
-    for param in params:
-        print(
-            f"Name: {param.name}, Value: {param.value}, Type: {param.param_type}, Method: {param.method}"
-        )
-
-
 if __name__ == "__main__":
+
+    async def main():
+        # single url for test
+        url = "http://testphp.vulnweb.com/login.php"
+        paramhandler = ParamReconHandler(url)
+        params = await paramhandler.collect_parameters()
+        print("Single URL parameters:")
+        for param in params:
+            print(
+                f"Name: {param.name}, Value: {param.value}, Type: {param.param_type}, Method: {param.method}"
+            )
+
+        # multiple urls for test
+        url_lst = [
+            "http://localhost/index.php?type=title",
+        ]
+        paramhandler = ParamReconHandler(url_lst)
+        params = await paramhandler.collect_parameters()
+        print("\nMultiple URL parameters:")
+        for param in params:
+            print(
+                f"Name: {param.name}, Value: {param.value}, Type: {param.param_type}, Method: {param.method}"
+            )
+
     asyncio.run(main())
