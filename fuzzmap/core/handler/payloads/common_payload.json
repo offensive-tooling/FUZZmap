@@ -1,30 +1,23 @@
 {
   "payloads": [
     {
-      "payload": "'",
-      "type": "sql_injection",
-      "description": "Basic SQL injection test",
-      "detection": {
-        "type": "error_based",
-        "patterns": [
-          "SQL syntax",
-          "mysql_error",
-          "ORA-",
-          "SQLite"
-        ]
-      }
+      "payload": "';}<h1>test</h1>//",
+      "description": "XSS, SQL injection",
+      "vulnerabilities": [
+        {"type": "sql_injection"},
+        {"type": "xss"}
+      ]
     },
     {
-      "payload": "<script>alert(1)</script>",
-      "type": "xss",
-      "description": "Basic XSS test",
-      "detection": {
-        "type": "reflection",
-        "patterns": [
-          "<script>",
-          "alert(1)"
-        ]
-      }
+      "payload": [
+        "' or 1=1 -- -;<img src=x>//",
+        "' or 1>1 -- -;<img src=x>//"
+      ],
+      "description": "Boolean-based SQLi, XSS",
+      "vulnerabilities": [
+        {"type": "sql_injection"},
+        {"type": "xss"}
+      ]
     }
   ]
 } 
