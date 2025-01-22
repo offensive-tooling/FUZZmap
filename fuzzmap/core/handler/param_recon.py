@@ -201,16 +201,16 @@ if __name__ == "__main__":
                 f"Name: {param.name}, Value: {param.value}, Type: {param.param_type}, Method: {param.method}"
             )
 
-        # multiple urls for test
-        url_lst = [
-            "http://localhost/index.php?type=title",
-        ]
-        paramhandler = ParamReconHandler(url_lst)
-        params = await paramhandler.collect_parameters()
-        print("\nMultiple URL parameters:")
-        for param in params:
-            print(
-                f"Name: {param.name}, Value: {param.value}, Type: {param.param_type}, Method: {param.method}"
-            )
+        # # multiple urls for test
+        # url_lst = [
+        #     "http://localhost/index.php?type=title",
+        # ]
+        # paramhandler = ParamReconHandler(url_lst)
+        # params = await paramhandler.collect_parameters()
+        # print("\nMultiple URL parameters:")
+        # for param in params:
+        #     print(
+        #         f"Name: {param.name}, Value: {param.value}, Type: {param.param_type}, Method: {param.method}"
+        #     )
 
     asyncio.run(main())

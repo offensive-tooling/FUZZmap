@@ -12,13 +12,19 @@
     fuzzmap -t http://testphp.vulnweb.com/listproducts.php -rp
 
 🐍 모듈로 사용하는 경우:
+    import asyncio
     from fuzzmap import Controller
 
-    fm = Controller(target="http://testphp.vulnweb.com",method="GET",param="cat")
-    fm.run()
+    async def main():
+        fm = Controller(target="http://testphp.vulnweb.com",method="GET",param="cat")
+        results = await fm.async_run()
+        print(results)
 
-    fm = Controller(target="http://testphp.vulnweb.com",recon_param=True)
-    fm.run()
+        fm = Controller(target="http://testphp.vulnweb.com",recon_param=True)
+        results = await fm.async_run()
+        print(results)
+
+    asyncio.run(main())
 
 ⚙️  Options:
 

@@ -1,4 +1,5 @@
 import sys
+import asyncio
 from .parser import Parser
 from ..logging.log import Logger
 from ..controller.controller import Controller
@@ -8,7 +9,8 @@ class CLI:
         self.parser = Parser()
         self.logger = Logger()
 
-    def run(self):
+    async def async_run(self):
+        """CLI 비동기 실행"""
         try:
             args = self.parser.parse_args()
             controller = Controller(
@@ -17,7 +19,7 @@ class CLI:
                 param=args.param,
                 recon_param=args.recon_param
             )
-            results = controller.run()
+            results = await controller.async_run()
             self.print_results(results)
             return results
         except Exception as e:
@@ -87,12 +89,29 @@ class CLI:
             return
 
         print("\n\033[92m[+] Scan Results:\033[0m")
-        for vuln_type, findings in results.items():
-            print(f"\n\033[94m[*] {vuln_type.upper()}:\033[0m")
-            for finding in findings:
-                print(f"  - Parameter: {finding['param']}")
-                print(f"    Payload: {finding['payload']}")
-                print(f"    Evidence: {finding['evidence']}")
+        
+        # 파라미터 정보 출력
+        if "parameters" in results:
+            print("\n\033[94m[*] Detected Parameters:\033[0m")
+            for param in results["parameters"]:
+                print(f"  - Name: {param.name}")
+                print(f"    Type: {param.param_type}")
+                print(f"    Method: {param.method}")
+                if param.value:
+                    print(f"    Value: {param.value}")
+                print()
+
+        # 취약점 결과 출력
+        if "vulnerabilities" in results:
+            for vuln_type, findings in results["vulnerabilities"].items():
+                if findings:  # 결과가 있는 경우만 출력
+                    print(f"\n\033[94m[*] {vuln_type.upper()} Test Results:\033[0m")
+                    for param, param_findings in findings.items():
+                        print(f"\n  Parameter: {param}")
+                        for finding in param_findings:
+                            print(f"    - Payload: {finding.get('payload', 'N/A')}")
+                            print(f"      Type: {finding.get('type', 'N/A')}")
+                            print(f"      Description: {finding.get('description', 'N/A')}")
 
 if __name__ == "__main__":
     c = CLI()

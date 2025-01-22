@@ -26,7 +26,7 @@ class Parser:
         )
         self.parser.add_argument(
             "-rp", "--recon-param",
-            help="파라미터 자동 탐지 활성화",
+            help="URL과 폼에서 파라미터를 자동으로 탐지합니다. -p 옵션과 함께 사용할 수 없습니다.",
             action="store_true"
         )
         self.parser.add_argument(
@@ -37,6 +37,8 @@ class Parser:
 
     def parse_args(self):
         args = self.parser.parse_args()
+        if args.param and args.recon_param:
+            self.parser.error("--param과 --recon-param은 동시에 사용할 수 없습니다.")
         if args.param:
             args.param = [p.strip() for p in args.param.split(',')]
         return args 
