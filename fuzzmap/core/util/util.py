@@ -1,5 +1,7 @@
 import re
+import os
 import random
+import json
 import urllib.parse
 from typing import Dict, List, Optional
 
@@ -52,6 +54,20 @@ class Util:
             "Mozilla/5.0 (compatible; DuckDuckBot-Https/1.1; https://duckduckgo.com/duckduckbot)"
         ]
         return random.choice(user_agents) 
+
+    @staticmethod
+    def load_json(filepath: str) -> Dict:
+        try:
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            full_path = os.path.join(base_dir, filepath)
+            with open(full_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except FileNotFoundError as e:
+            print(f"File not found: {filepath}")
+            return {}
+        except json.JSONDecodeError as e:
+            print(f"Invalid JSON: {filepath}")
+            return {}
 
 
 if __name__ == "__main__":
