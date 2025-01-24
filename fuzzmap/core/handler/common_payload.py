@@ -306,7 +306,7 @@ class VulnerabilityClassifier:
 """테스트"""
 if __name__ == "__main__":
    import asyncio
-   from fuzzmap.core.handler.payload_request import RequestPayloadHandler
+   from fuzzmap.core.handler.request_payload import RequestPayloadHandler
 
    async def test_common_payload():
        test_url = "http://php.testinvicti.com/artist.php"
