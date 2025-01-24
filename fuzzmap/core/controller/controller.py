@@ -9,6 +9,14 @@ class Controller:
     def __init__(self, target: str, method: str = "GET", 
                  param: Optional[List[str]] = None, 
                  recon_param: bool = False):
+        """
+        컨트롤러 초기화
+        Args:
+            target: 대상 URL
+            method: HTTP 메서드 (GET/POST)
+            param: 수동으로 지정된 파라미터 목록
+            recon_param: 파라미터 자동 수집 여부
+        """
         self.target = target
         self.method = method.upper()
         self.params = param if param else []

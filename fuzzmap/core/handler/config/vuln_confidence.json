@@ -1,0 +1,19 @@
+{
+  "sql_injection": {
+      "error": 70,
+      "time_delay": 60,
+      "version_leak": 100,
+      "response_diff": 50
+  },
+  "xss": {
+      "reflected": 50,
+      "url_encoded": 50,
+      "html_injection": 50
+  },
+  "ssti": {
+      "calculation_result": 100
+  },
+  "default_thresholds": {
+      "deep_scan": 50
+  }
+}

