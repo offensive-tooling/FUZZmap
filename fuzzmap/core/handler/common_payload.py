@@ -272,8 +272,7 @@ class ResponseAnalyzer:
 
         return VulnerabilityInfo(type="sql_injection", detected=False)
 
-    def check_xss(self, response_text: str, payload: str,
-                  alert_triggered: bool = False) -> VulnerabilityInfo:
+    def check_xss(self, response_text: str, payload: str, alert_triggered: bool = False) -> VulnerabilityInfo:
         if alert_triggered:
             return VulnerabilityInfo(
                 type="xss",
@@ -285,32 +284,72 @@ class ResponseAnalyzer:
         if isinstance(payload, list):
             payload = payload[0]
 
-        if tag_match := self.tag_pattern.search(payload):
+        # URL 인코딩 체크
+        url_encoded_chars = {
+            '%3C': '<', 
+            '%3E': '>', 
+            '%22': '"', 
+            '%27': "'",
+            '%20': ' ',
+            '%3D': '=',
+            '%28': '(',
+            '%29': ')'
+        }
+        
+        # HTML 인코딩 체크
+        html_encoded_chars = {
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;',
+            '(': '&#40;',
+            ')': '&#41;',
+            '=': '&#61;',
+            ' ': '&nbsp;'
+        }
+
+        is_url_encoded = any(encoded in payload for encoded in url_encoded_chars)
+        decoded_payload = payload
+        for encoded, char in url_encoded_chars.items():
+            decoded_payload = decoded_payload.replace(encoded, char)
+
+        # tag 체크 
+        if tag_match := self.tag_pattern.search(decoded_payload):
             injected_tag = tag_match.group(0)
             if injected_tag in response_text:
                 context = self._get_context(response_text, injected_tag)
-                special_chars = {
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#x27;'}
+                
+                # HTML 인코딩 상태만 체크
                 encoding_status = []
-                for char, encoded in special_chars.items():
+                for char, encoded in html_encoded_chars.items():
                     if char in injected_tag:
                         if encoded in context:
                             encoding_status.append(f"{char} is HTML encoded")
                         else:
-                            encoding_status.append(f"{char} is unencoded")
+                            encoding_status.append(f"{char} is unfiltered")
 
                 return VulnerabilityInfo(
                     type="xss",
-                    pattern_type="html_injection",
+                    pattern_type="html_injection" if not is_url_encoded else "url_encoded",
                     evidence=f"HTML tag injected {injected_tag}",
                     context=context,
                     detected=True,
-                    encoding_info=' | '.join(encoding_status) if encoding_status else None)
+                    encoding_info=' | '.join(encoding_status) if encoding_status else None
+                )
 
-        if injected_partial := self.partial_pattern.search(payload):
+        # reflected 체크 
+        if decoded_payload in response_text:
+            context = self._get_context(response_text, decoded_payload)
+            return VulnerabilityInfo(
+                type="xss",
+                pattern_type="reflected",
+                evidence=f"Payload reflected: {decoded_payload}",
+                context=context,
+                detected=True
+            )
+
+        # partial tag 체크
+        if injected_partial := self.partial_pattern.search(decoded_payload):
             partial_tag = injected_partial.group(0)
             if partial_tag in response_text:
                 context = self._get_context(response_text, partial_tag)
