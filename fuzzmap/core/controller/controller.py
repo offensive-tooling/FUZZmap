@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 from fuzzmap.core.handler.param_recon import ParamReconHandler, Param
-from fuzzmap.core.handler.common_payload import CommonPayload
+from fuzzmap.core.handler.common_payload import CommonPayloadHandler
 from fuzzmap.core.handler.advanced_payload import AdvancedPayload
 from fuzzmap.core.logging.log import Logger
 import asyncio
