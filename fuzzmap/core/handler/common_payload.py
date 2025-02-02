@@ -1,3 +1,4 @@
+import time
 import gc
 import re
 import asyncio
@@ -35,14 +36,13 @@ class ScanResult:
 
     def cleanup(self):
         self.response_text = None
-        gc.collect()
 
 
 class CommonPayloadHandler:
     def __init__(self):
         self._payloads = Util.load_json(
             'handler/payloads/common_payload.json')['payloads']
-        self._analyzer = ResponseAnalyzer(self._payloads)
+        self._analyzer = ResponseAnalyzer(self._payloads)  # 페이로드 전달
         self._classifier = VulnerabilityClassifier()
         self.logger = Logger()
 
@@ -141,8 +141,10 @@ class CommonPayloadHandler:
                                 VulnerabilityInfo(**vuln)
                                 for vuln in payload_info.get('vulnerabilities', [])
                             ],
-                            alert_triggered=getattr(response, 'alert_triggered', False),
-                            alert_message=getattr(response, 'alert_message', '')
+                            alert_triggered=getattr(
+                                response, 'alert_triggered', False),
+                            alert_message=getattr(
+                                response, 'alert_message', '')
                         )
                         analyzed_result = self._analyzer.analyze_res(result)
                         classified_result = self._classifier.classify_vuln(
@@ -183,6 +185,12 @@ class ResponseAnalyzer:
         self.sql_patterns = self._compile_sql_patterns()
         self._payloads = payloads if payloads else []
 
+        # Boolean pairs 로드 추가
+        self.boolean_pairs = []
+        self.boolean_responses = {}  # 페이로드 쌍의 응답 저장할 딕셔너리
+        if self._payloads:
+            self._load_boolean_payloads()
+
     def _compile_sql_patterns(self):
         """SQL 에러 패턴 컴파일해서 저장"""
         raw_patterns = Util.load_json('handler/config/sql_error.json')
@@ -195,22 +203,37 @@ class ResponseAnalyzer:
                     re.compile(
                         pattern,
                         re.IGNORECASE) for pattern in patterns]}
+
         return compiled_patterns
 
-    def analyze_res(self, scan_result: ScanResult) -> ScanResult:
-        # Original payload 확인 및 response_diff 계산
-        original_payload = next(
-            (p for p in self._payloads if scan_result.payload in p.get(
-                'payload', [])), None)
+    def _load_boolean_payloads(self):
+        """common_payload.json에서 boolean 페이로드 쌍 추출"""
+        self.boolean_pairs = []
+        self.pair_responses = {}
 
-        response_diff = (
-            abs(len(scan_result.response_text[0]) - len(scan_result.response_text[1]))
-            if original_payload
-            and isinstance(original_payload.get('payload'), list)
-            and isinstance(scan_result.response_text, list)
-            and len(scan_result.response_text) == 2
-            else None
-        )
+        for entry in self._payloads:
+            if isinstance(entry.get('payload'), list) and len(
+                    entry['payload']) == 2:
+                self.boolean_pairs.append(entry)
+                self.pair_responses[tuple(entry['payload'])] = {}
+
+    def analyze_res(self, scan_result: ScanResult) -> ScanResult:
+        response_diff = None
+
+        # Boolean pair 확인 및 response_diff 계산
+        for pair in self.boolean_pairs:
+            pair_key = tuple(pair['payload'])
+            if scan_result.payload in pair_key:
+                # 현재 응답 길이 저장
+                self.pair_responses[pair_key][scan_result.payload] = len(
+                    scan_result.response_text)
+
+                # 페어의 두 응답이 모두 있으면 차이 계산
+                if len(self.pair_responses[pair_key]) == 2:
+                    response_diff = abs(
+                        self.pair_responses[pair_key][pair_key[0]] -
+                        self.pair_responses[pair_key][pair_key[1]]
+                    )
 
         # 취약점 검사 및 결과 업데이트
         for vuln in scan_result.vulnerabilities:
@@ -229,12 +252,13 @@ class ResponseAnalyzer:
                 detection = self.check_ssti(
                     scan_result.response_text, scan_result.alert_message)
 
-            if detection and detection.detected:
+            if detection:  # detection False여도 반환
                 vuln.detected = detection.detected
                 vuln.pattern_type = detection.pattern_type
                 vuln.evidence = detection.evidence
                 vuln.context = detection.context
                 vuln.encoding_info = detection.encoding_info
+                vuln.response_diff = detection.response_diff  # response_diff 추가
 
         return scan_result
 
@@ -250,7 +274,8 @@ class ResponseAnalyzer:
                         pattern_type="error",
                         evidence=f"SQL error detected ({dbms_type})",
                         context=context,
-                        detected=True
+                        detected=True,
+                        response_diff=response_diff
                     )
 
         if response_time > 5:
@@ -258,7 +283,8 @@ class ResponseAnalyzer:
                 type="sql_injection",
                 pattern_type="time_delay",
                 evidence=f"Response delayed {response_time:.2f}s",
-                detected=True
+                detected=True,
+                response_diff=response_diff
             )
 
         if response_diff and response_diff > 500:
@@ -270,9 +296,13 @@ class ResponseAnalyzer:
                 response_diff=response_diff
             )
 
-        return VulnerabilityInfo(type="sql_injection", detected=False)
+        return VulnerabilityInfo(
+            type="sql_injection",
+            detected=False,
+            response_diff=response_diff)
 
-    def check_xss(self, response_text: str, payload: str, alert_triggered: bool = False) -> VulnerabilityInfo:
+    def check_xss(self, response_text: str, payload: str,
+                  alert_triggered: bool = False) -> VulnerabilityInfo:
         if alert_triggered:
             return VulnerabilityInfo(
                 type="xss",
@@ -286,16 +316,16 @@ class ResponseAnalyzer:
 
         # URL 인코딩 체크
         url_encoded_chars = {
-            '%3C': '<', 
-            '%3E': '>', 
-            '%22': '"', 
+            '%3C': '<',
+            '%3E': '>',
+            '%22': '"',
             '%27': "'",
             '%20': ' ',
             '%3D': '=',
             '%28': '(',
             '%29': ')'
         }
-        
+
         # HTML 인코딩 체크
         html_encoded_chars = {
             '<': '&lt;',
@@ -308,17 +338,18 @@ class ResponseAnalyzer:
             ' ': '&nbsp;'
         }
 
-        is_url_encoded = any(encoded in payload for encoded in url_encoded_chars)
+        is_url_encoded = any(
+            encoded in payload for encoded in url_encoded_chars)
         decoded_payload = payload
         for encoded, char in url_encoded_chars.items():
             decoded_payload = decoded_payload.replace(encoded, char)
 
-        # tag 체크 
+        # tag 체크
         if tag_match := self.tag_pattern.search(decoded_payload):
             injected_tag = tag_match.group(0)
             if injected_tag in response_text:
                 context = self._get_context(response_text, injected_tag)
-                
+
                 # HTML 인코딩 상태만 체크
                 encoding_status = []
                 for char, encoded in html_encoded_chars.items():
@@ -334,10 +365,11 @@ class ResponseAnalyzer:
                     evidence=f"HTML tag injected {injected_tag}",
                     context=context,
                     detected=True,
-                    encoding_info=' | '.join(encoding_status) if encoding_status else None
+                    encoding_info=' | '.join(
+                        encoding_status) if encoding_status else None
                 )
 
-        # reflected 체크 
+        # reflected 체크
         if decoded_payload in response_text:
             context = self._get_context(response_text, decoded_payload)
             return VulnerabilityInfo(
@@ -412,7 +444,6 @@ class VulnerabilityClassifier:
 
 
 """테스트"""
-import time
 if __name__ == "__main__":
     async def test():
         test_url = "http://php.testinvicti.com/artist.php"
@@ -421,41 +452,72 @@ if __name__ == "__main__":
             "value": "",
             "method": "GET"
         }
+
         try:
             start_time = time.time()
-
             common_handler = CommonPayloadHandler()
-
             results = await common_handler.scan(
                 url=test_url,
                 param_name=test_param["name"],
                 param_info=test_param
             )
-
-            end_time = time.time()
-            execution_time = end_time - start_time
-
-            print(f"실행 시간: {execution_time:.2f} 초")
+            print(f"실행 시간: {time.time() - start_time:.2f} 초")
             print(f"찾은 결과 수: {len(results)}")
-
             print("\n[+] Scan Results:")
-            for result in results:
+
+            i = 0
+            while i < len(results):
+                result = results[i]
+                result2 = results[i + 1] if i + 1 < len(results) else None
+
+                is_boolean_pair = result2 and any(
+                    isinstance(p.get('payload'), list) and
+                    result.payload in p['payload'] and
+                    result2.payload in p['payload']
+                    for p in common_handler._payloads)
+
                 print("===")
                 print(f"Param_Name: {result.param_name}")
-                print(f"Payload: {result.payload}")
-                print(f"Response_Time: {result.response_time:.2f}s")
-                print(f"Alert_Triggered: {result.alert_triggered}")
-                print(f"Alert_Message: {result.alert_message}")
 
-                for vuln in result.vulnerabilities:
-                    print(f"Type: {vuln.type}")
-                    print(f"Pattern_Type: {vuln.pattern_type}")
-                    print(f"Confidence: {vuln.confidence}%")
-                    print(f"Evidence: {vuln.evidence}")
-                    if vuln.encoding_info:
-                        print(f"Encoding: {vuln.encoding_info}")
-                    print("---")
+                if is_boolean_pair:
+                    print(f"Payload: {result.payload} , {result2.payload}")
+                    print(
+                        f"Response_Time: {
+                            result.response_time:.2f}s, {
+                            result2.response_time:.2f}s")
+                    print(
+                        f"Response_Length: {
+                            result.response_length}, {
+                            result2.response_length}")
+
+                    for vuln in result2.vulnerabilities:
+                        print("---")
+                        print(f"Type: {vuln.type}")
+                        print(f"Pattern_Type: {vuln.pattern_type}")
+                        print(f"Confidence: {vuln.confidence}%")
+                        print(f"Evidence: {vuln.evidence}")
+                        if vuln.response_diff:
+                            print(f"Response_Diff: {vuln.response_diff}")
+                        if vuln.encoding_info:
+                            print(f"Encoding: {vuln.encoding_info}")
+                    i += 2
+                else:
+                    print(f"Payload: {result.payload}")
+                    print(f"Response_Time: {result.response_time:.2f}s")
+
+                    for vuln in result.vulnerabilities:
+                        print("---")
+                        print(f"Type: {vuln.type}")
+                        print(f"Pattern_Type: {vuln.pattern_type}")
+                        print(f"Confidence: {vuln.confidence}%")
+                        print(f"Evidence: {vuln.evidence}")
+                        if vuln.response_diff:
+                            print(f"Response_Diff: {vuln.response_diff}")
+                        if vuln.encoding_info:
+                            print(f"Encoding: {vuln.encoding_info}")
+                    i += 1
                 print()
+
         except Exception as e:
             print(f"Error: {e}")
 
