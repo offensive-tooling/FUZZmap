@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 
 from fuzzmap.core.util.util import Util
 from fuzzmap.core.logging.log import Logger
-from fuzzmap.core.handler.payload_request import RequestPayloadHandler
+from fuzzmap.core.handler.request_payload import RequestPayloadHandler
 
 from dataclasses import dataclass
 
