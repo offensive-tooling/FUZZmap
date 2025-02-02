@@ -110,7 +110,7 @@
      },
      {
       "payload": "';}<h1>test</h1>//",
-      "description": "HTML injection, SQL injection",
+      "description": "SQL injection, XSS",
       "vulnerabilities": [
         {
           "type": "sql_injection"
@@ -137,7 +137,7 @@
      },
      {
       "payload": "<img src=x onerror='javascript:alert(6)'>",
-      "description": "XSS test using img tag with onerror event",
+      "description": "SQL Injection, XSS",
       "vulnerabilities": [
        {
           "type": "sql_injection"
@@ -176,7 +176,7 @@
      },
      {
       "payload": "/*!SLEEP(5)/*/alert(1)/*/*/",
-      "description": "MySQL time-based SQLi and XSS test",
+      "description": "SQL Injection, XSS",
       "vulnerabilities": [
         {
           "type": "sql_injection"
@@ -219,6 +219,9 @@
       "vulnerabilities": [
         {
            "type": "sql_injection"
+        },
+        {
+          "type": "ssti"
         },
         {
           "type": "xss"

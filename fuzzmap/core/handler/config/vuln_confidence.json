@@ -7,8 +7,10 @@
   },
   "xss": {
       "reflected": 50,
-      "url_encoded": 50,
-      "html_injection": 50
+      "url_encoded": 30,
+      "partial_tag_injection": 30,
+      "html_injection": 50,
+      "alert_triggered": 70
   },
   "ssti": {
       "calculation_result": 100
