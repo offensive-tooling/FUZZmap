@@ -261,7 +261,7 @@ if __name__ == "__main__":
 
     async def main():
         urls = [
-            "http://testphp.vulnweb.com/search",
+            "http://testphp.vulnweb.com/login.php",
             "http://testhtml5.vulnweb.com/#/popular",
             "http://testasp.vulnweb.com/Search.asp",
             "https://ocw.mit.edu/",
