@@ -1,7 +1,6 @@
 from typing import Dict, List, Optional
 from fuzzmap.core.handler.param_recon import ParamReconHandler, Param
-from fuzzmap.core.handler.common_payload import CommonPayloadHandler
-from fuzzmap.core.handler.advanced_payload import AdvancedPayload
+from fuzzmap.core.handler.common_payload import CommonPayloadHandler, ScanResult
 from fuzzmap.core.logging.log import Logger
 import asyncio
 
@@ -23,8 +22,7 @@ class Controller:
         self.recon_param = recon_param
         self.logger = Logger()
         self.param_recon = ParamReconHandler(self.target)
-        self.common_payload = CommonPayload()
-        self.advanced_payload = AdvancedPayload()
+        self.common_payload = CommonPayloadHandler()
 
     def run(self) -> Dict:
         """동기 실행 메서드 - CLI에서 호출됨"""
@@ -47,6 +45,54 @@ class Controller:
             self.logger.error(f"파라미터 탐지 중 오류 발생: {str(e)}")
             return []
 
+    async def _scan_vulnerabilities(self, params: List[Param]) -> Dict[str, List[ScanResult]]:
+        """취약점 스캔 실행"""
+        vulnerabilities = {}
+        try:
+            for param in params:
+                param_info = {
+                    "method": param.method,
+                    "path": param.path
+                }
+
+                print(f"===============================================================================")
+                print(f"URL: {param.url}")
+                print(f"param name: {param.name}")
+                print(f"param info: {param_info}")
+                print(f"===============================================================================")
+
+                scan_results = await self.common_payload.scan(
+                    url=param.url,
+                    param_name=param.name,
+                    param_info=param_info
+                )
+                if scan_results:
+                    vulnerabilities[param.name] = scan_results
+                    
+                    # 스캔 결과 출력
+                    print(f"\n[+] Vulnerability Scan Results for {param.name}:")
+                    for result in scan_results:
+                        print(f"\nPayload: {result.payload}")
+                        print(f"Response Time: {result.response_time:.2f}s")
+                        print(f"Alert Triggered: {result.alert_triggered}")
+                        if result.alert_message:
+                            print(f"Alert Message: {result.alert_message}")
+                        
+                        for vuln in result.vulnerabilities:
+                            if vuln.detected:
+                                print(f"Type: {vuln.type}")
+                                print(f"Pattern Type: {vuln.pattern_type}")
+                                print(f"Confidence: {vuln.confidence}%")
+                                print(f"Evidence: {vuln.evidence}")
+                                if vuln.encoding_info:
+                                    print(f"Encoding: {vuln.encoding_info}")
+                                print("-" * 50)
+                
+        except Exception as e:
+            self.logger.error(f"취약점 스캔 중 오류 발생: {str(e)}")
+        
+        return vulnerabilities
+
     async def async_run(self) -> Dict:
         """비동기 실행 메서드"""
         try:
@@ -56,49 +102,55 @@ class Controller:
             }
 
             # 파라미터 수집
+            collected_params = []
             if self.recon_param:
                 collected_params = await self._collect_parameters()
                 if collected_params:
                     results["parameters"] = collected_params
                     self.params = [param.name for param in collected_params]
                     
-                    # 수집된 파라미터 출력 (param_recon.py와 동일한 형식)
-                    print("\nSingle URL parameters:")
+                    print("\nCollected parameters:")
                     for param in collected_params:
                         print(
+                            f"URL: {param.url}, "
                             f"Name: {param.name}, "
                             f"Value: {param.value}, "
                             f"Type: {param.param_type}, "
-                            f"Method: {param.method}"
+                            f"Method: {param.method}, "
+                            f"Path: {param.path}"
                         )
-        
+            
             # 지정된 파라미터가 있는 경우
             elif self.params:
-                results["parameters"] = [
-                    Param(name=param, value="", param_type="user-specified", method=self.method)
+                collected_params = [
+                    Param(
+                        url=self.target,
+                        name=param,
+                        value="",
+                        param_type="user-specified",
+                        method=self.method,
+                        path=""
+                    )
                     for param in self.params
                 ]
-                # 지정된 파라미터도 동일한 형식으로 출력
+                results["parameters"] = collected_params
                 print("\nSpecified parameters:")
-                for param in results["parameters"]:
+                for param in collected_params:
                     print(
+                        f"URL: {param.url}, "
                         f"Name: {param.name}, "
                         f"Value: {param.value}, "
                         f"Type: {param.param_type}, "
-                        f"Method: {param.method}"
+                        f"Method: {param.method}, "
+                        f"Path: {param.path}"
                     )
 
-            # 취약점 스캔 부분은 주석 처리 (현재는 param_recon에만 집중)
-            """
-            if self.params:
-                common_results = await self.common_payload.test(...)
-                advanced_results = await self.advanced_payload.test(...)
-                if common_results or advanced_results:
-                    results["vulnerabilities"] = {...}
-            """
+            # 취약점 스캔 실행
+            if collected_params:
+                results["vulnerabilities"] = await self._scan_vulnerabilities(collected_params)
 
             return results
-            
+
         except Exception as e:
             self.logger.error(f"Controller execution error: {str(e)}")
             return {"parameters": [], "vulnerabilities": {}}
@@ -112,34 +164,23 @@ class Controller:
 
 if __name__ == "__main__":
     async def main():
-        # 파라미터 지정 테스트
-        print("\n[*] Parameter Specification Test")
-        print("-" * 50)
-        controller = Controller(
-            target="http://testphp.vulnweb.com/listproducts.php",
-            method="GET",
-            param=["cat"]
-        )
-        results = await controller.async_run()
-        if results.get("parameters") or results.get("vulnerabilities"):
-            print("\n[+] Results found:")
-            print(results)
-        else:
-            print("[!] No results found")
-
+        # # 파라미터 지정 테스트
+        # print("\n[*] Parameter Specification Test")
+        # print("-" * 50)
+        # controller = Controller(
+        #     target="http://testphp.vulnweb.com/listproducts.php",
+        #     method="GET",
+        #     param=["cat"]
+        # )
+        # results = await controller.async_run()
+        
         # 파라미터 자동 탐지 테스트
         print("\n[*] Parameter Reconnaissance Test")
         print("-" * 50)
         controller = Controller(
-            target="http://testphp.vulnweb.com/login.php",
+            target="http://testphp.vulnweb.com/listproducts.php?cat=1234",
             recon_param=True
         )
         results = await controller.async_run()
-        if results.get("parameters") or results.get("vulnerabilities"):
-            print("\n[+] Results found:")
-            print(results)
-        else:
-            print("[!] No results found")
 
-    # 메인 함수 실행
     asyncio.run(main())
