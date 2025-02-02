@@ -4,6 +4,7 @@ import random
 import json
 import urllib.parse
 from typing import Dict, List, Optional
+from urllib.parse import urljoin, urlparse
 
 class Util:
     @staticmethod
@@ -69,6 +70,33 @@ class Util:
             print(f"Invalid JSON: {filepath}")
             return {}
 
+    @staticmethod
+    def combine_url_with_path(base_url: str, path: str) -> str:
+        """베이스 URL과 path를 결합
+        Args:
+            base_url: 기본 URL (예: http://example.com/test.php)
+            path: 추가할 경로 (예: /search.php)
+        Returns:
+            str: 결합된 URL
+        """
+        # path가 없거나 비어있거나 단순 '/'인 경우 base_url 반환
+        if not path or path.strip() == '/':
+            return base_url
+        
+        # base_url에서 기존 path 제거하고 scheme과 netloc만 사용
+        parsed = urlparse(base_url)
+        base = f"{parsed.scheme}://{parsed.netloc}"
+        
+        # path가 절대 경로면 그대로 사용, 상대 경로면 /를 추가
+        if not path.startswith('/'):
+            path = '/' + path
+        
+        # path가 의미있는 endpoint를 가리키는지 확인
+        # 단순히 파일 확장자나 경로가 있는지 체크
+        if '.' in path or '/' not in path[-1:]:
+            return urljoin(base, path)
+        else:
+            return base_url
 
 if __name__ == "__main__":
     # Util 클래스의 인스턴스 생성
@@ -116,4 +144,21 @@ if __name__ == "__main__":
     # 5. 랜덤 User-Agent 테스트
     print("\n5. 랜덤 User-Agent 테스트:")
     for _ in range(3):
-        print(f"랜덤 User-Agent: {util.get_random_user_agent()}") 
+        print(f"랜덤 User-Agent: {util.get_random_user_agent()}")
+    
+    # 6. URL 결합 테스트
+    print("\n6. URL 결합 테스트:")
+    test_cases = [
+        ("http://example.com/test.php", ""),  # 빈 path
+        ("http://example.com/test.php", "/"), # 단순 슬래시
+        ("http://example.com/test.php", "search.php"), # 상대 경로
+        ("http://example.com/test.php", "/search.php"), # 절대 경로
+        ("http://example.com/test.php", "api/"), # 의미없는 경로
+        ("http://example.com/test.php", "/api/v1/search.php") # 복잡한 경로
+    ]
+    
+    for base_url, path in test_cases:
+        combined = Util.combine_url_with_path(base_url, path)
+        print(f"Base URL: {base_url}")
+        print(f"Path: {path}")
+        print(f"Combined: {combined}\n") 
