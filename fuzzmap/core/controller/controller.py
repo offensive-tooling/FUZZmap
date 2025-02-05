@@ -1,6 +1,6 @@
-import json #테스트용 
-import asyncio #테스트용
-from typing import Dict, List, Optional #테스트용 
+import json
+from typing import Dict, List, Optional
+import asyncio
 
 from fuzzmap.core.handler.param_recon import ParamReconHandler
 from fuzzmap.core.handler.common_payload import CommonPayloadHandler
@@ -8,163 +8,73 @@ from fuzzmap.core.handler.advanced_payload import AdvancedPayloadHandler
 from fuzzmap.core.handler.payload_request import RequestPayloadHandler
 from fuzzmap.core.handler.payload_request import Logger
 
+
 class Controller:
-    def __init__(self, target: str, method: str = "GET", 
-                 param: Optional[List[str]] = None, 
-                 recon_param: bool = False):
-        """
-        컨트롤러 초기화
-        Args:
-            target: 대상 URL
-            method: HTTP 메서드 (GET/POST)
-            param: 수동으로 지정된 파라미터 목록
-            recon_param: 파라미터 자동 수집 여부
-        """
-        self.target = target
+    def __init__(self, target_url: str, method: str = "GET", 
+                 params: List[str] = None, recon_param: bool = False):
+        self.url = target_url
         self.method = method.upper()
-        self.params = param if param else []
+        self.params = params or []
         self.recon_param = recon_param
-        self.Logger = Logger()
-        
-        # 모듈 설정
-        self.config = {
-            "timeout": 30,
-            "deep_scan_threshold": 50,
-            "payload_files": ["common_payload.json", "sqli_payload.json"],
-            "max_concurrent": 5
-        }
+        self.logger = Logger()
 
-    async def run(self) -> Dict:
+    async def run(self):
         try:
-            # 1. 파라미터 수집 단계
+            handler = CommonPayloadHandler()
+            params_dict = {}
+
+            # 1. 파라미터 수집 및 전처리
             if self.recon_param:
-                param_handler = ParamReconHandler(self.target)
-                collected_params = await param_handler.collect_parameters()
-                
-                if collected_params:
-                    self.params = [param.name for param in collected_params]
-                else:
-                    self.Logger.warning("파라미터를 찾을 수 없습니다.")
+                # 1-1. ParamRecon 모듈로 파라미터 자동 수집
+                collected = await ParamReconHandler(self.url).collect_parameters()
+                if not collected:
+                    self.logger.warning("No parameters found")
                     return {}
-            elif not self.params:
-                self.Logger.error("파라미터가 지정되지 않았습니다.")
-                return {}
 
-            # 2. 페이로드 요청 핸들러 초기화 및 실행
-            request_handler = RequestPayloadHandler(
-                payload_files=self.config["payload_files"],
-                timeout=self.config["timeout"],
-                max_concurrent=self.config["max_concurrent"]
-            )
+                # 1-2. 수집된 파라미터를 endpoint별로 정리
+                for param in collected:
+                    # URL과 path 결합하여 최종 endpoint URL 생성
+                    endpoint_url = param.url.rstrip('/') + (param.path or '')
+                    # endpoint별 파라미터 딕셔너리에 추가
+                    params_dict.setdefault(endpoint_url, {})[param.name] = ""
+            else:
+                # 1-3. 수동 지정된 파라미터 처리
+                if not self.params:
+                    self.logger.error("No parameters specified")
+                    return {}
+                params_dict = {self.url: {p: "" for p in self.params}}
 
-            payload_results = {}
-            for param in self.params:
-                # 각 파라미터에 대해 페이로드 전송
-                param_dict = {param: ""}  # 페이로드가 삽입될 파라미터
-                scan_results = await request_handler.send_payloads(
-                    url=self.target,
-                    params=param_dict,
-                    method=self.method
-                )
-                payload_results[param] = scan_results
+            # 2. CommonPayloadHandler로 취약점 스캔 실행
+            results = {}
+            for url, params in params_dict.items():
+                # 각 endpoint URL과 파라미터에 대해 스캔 수행
+                results[url] = await handler.scan(url=url, params=params)
 
-            # 3. 공통 페이로드 분석 실행
-            common_handler = CommonPayloadHandler(timeout=self.config["timeout"])
-            common_results = {}
-            
-            for param, results in payload_results.items():
-                # RequestPayloadHandler의 결과를 CommonPayloadHandler로 전달
-                result = await common_handler.scan(
-                    url=self.target,
-                    param_name=param,
-                    param_type=self.method
-                )
-                
-                if result:
-                    common_results[param] = result
+            return results
 
-            # 4. 심화 스캔 대상 식별
-            advanced_results = {}
-            advanced_targets = []
-            
-            for param, results in common_results.items():
-                scan_results = results.get("scan_results", [])
-                for scan_result in scan_results:
-                    vulnerabilities = scan_result.get("payload_info", {}).get("vulnerabilities", [])
-                    
-                    for vuln in vulnerabilities:
-                        # confidence 값이 threshold를 넘으면 심화 스캔 대상으로 선정
-                        if vuln.get("confidence", 0) >= self.config["deep_scan_threshold"]:
-                            advanced_targets.append({
-                                "param": param,
-                                "vuln_type": vuln["type"],
-                                "confidence": vuln["confidence"],
-                                "payload_info": scan_result["payload_info"]
-                            })
-
-            # 5. 심화 스캔 실행 (대상이 있는 경우)
-            if advanced_targets:
-                advanced_handler = AdvancedPayloadHandler()
-                for target in advanced_targets:
-                    advanced_result = await advanced_handler.scan(
-                        url=self.target,
-                        param_name=target["param"],
-                        vuln_type=target["vuln_type"],
-                        payload_info=target["payload_info"]
-                    )
-                    if advanced_result:
-                        advanced_results[target["param"]] = advanced_result
-
-            return {
-                "payload_requests": payload_results,
-                "common": common_results,
-                "advanced": advanced_results
-            }
-            
         except Exception as e:
-            self.Logger.error(f"컨트롤러 실행 중 오류 발생: {str(e)}")
+            self.logger.error(f"Error in controller: {str(e)}")
             return {}
 
 """테스트"""
 if __name__ == "__main__":
-   import os
-   async def main():
-       # 현재 스크립트 경로 가져오기
-       current_dir = os.path.dirname(os.path.abspath(__file__))
-       output_dir = os.path.join(current_dir, "responses")
-       os.makedirs(output_dir, exist_ok=True)
-
+   import asyncio
+  
+   async def test():
        # 수동 파라미터 테스트
-       manual_controller = Controller(
-           target="http://php.testinvicti.com/artist.php",
-           method="GET",
-           param=["artist", "id"]
+       ctrl = Controller(
+           target_url="http://php.testinvicti.com/artist.php",
+           params=["artist", "id"]
        )
-       manual_results = await manual_controller.run()
-       
-       # 결과 저장
-       manual_output_file = os.path.join(output_dir, "manual_scan_results.json")
-       try:
-           with open(manual_output_file, "w", encoding="utf-8") as f:
-               json.dump(manual_results, f, indent=4, ensure_ascii=False)
-           print(f"수동 스캔 결과가 저장되었습니다: {manual_output_file}")
-       except Exception as e:
-           print(f"수동 스캔 결과 저장 실패: {e}")
+       results = await ctrl.run()
+       print("Manual scan results:", results)
 
-       # 자동 파라미터 수집 테스트
-       auto_controller = Controller(
-           target="http://php.testinvicti.com/artist.php",
+       # 자동 파라미터 테스트  
+       auto_ctrl = Controller(
+           target_url="https://ocw.mit.edu/",
            recon_param=True
        )
-       auto_results = await auto_controller.run()
+       auto_results = await auto_ctrl.run()
+       print("\n\nAuto scan results:", auto_results)
 
-       # 결과 저장
-       auto_output_file = os.path.join(output_dir, "auto_scan_results.json")
-       try:
-           with open(auto_output_file, "w", encoding="utf-8") as f:
-               json.dump(auto_results, f, indent=4, ensure_ascii=False)
-           print(f"자동 스캔 결과가 저장되었습니다: {auto_output_file}")
-       except Exception as e:
-           print(f"자동 스캔 결과 저장 실패: {e}")
-
-   asyncio.run(main())
+   asyncio.run(test())
