@@ -1,24 +1,22 @@
 from typing import Optional, List, Dict, Any
 import asyncio
-import json
+import re
+from statistics import mean
 from enum import Enum
 from fuzzmap.core.util.util import Util
 from fuzzmap.core.handler.request_payload import RequestPayloadHandler
 from dataclasses import dataclass
-
 
 class DetailVuln(Enum):
     ERROR_BASED_SQLI = "error_based"
     TIME_BASED_SQLI = "time_based"
     BOOLEAN_BASED_SQLI = "boolean_based"
 
-
 class Vuln(Enum):
     SQLI = "sqli"
     XSS = "xss"
     SSTI = "ssti"
     UNKNOWN = "unknown"
-
 
 @dataclass
 class AnalysisResult:
@@ -27,50 +25,50 @@ class AnalysisResult:
     evidence: Optional[str]
     payload: Optional[str]
     confidence: int
+    context: Optional[str] = None
 
 
 class AdvancedPayloadHandler:
     def __init__(self, vuln: Vuln, pattern: DetailVuln, url: str, method: str, params: dict, dbms: Optional[str] = None):
         self.requests_handler = RequestPayloadHandler()
-
         self.vuln = vuln
         self.pattern = pattern
         self.url = url
         self.method = method
         self.params = params
         self.dbms = dbms
-
-    def _load_payloads(self, vuln: str) -> dict:
-        file_mapping = {
-            "sqli": "fuzzmap/core/handler/payloads/sqli_payload.json",
+        self.payloads_mapping = {
+            "sqli": "handler/payloads/sqli_payload.json",
             "xss": "./payloads/xss_payload.json",
             "ssti": "./payloads/ssti_payload.json"
         }
-        filepath = file_mapping.get(vuln)
-        if not filepath:
-            raise ValueError(f"Unsupported vulnerability type: {vuln}")
-        try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except FileNotFoundError:
-            print(f"File not found: {filepath}")
-            return {}
-        except json.JSONDecodeError as e:
-            print(f"Invalid JSON format in file: {filepath}. Error: {e}")
-            return {}
-
-        
+        filepath = self.payloads_mapping.get(self.vuln.value)
+        self.payloads = Util.load_json(filepath)
 
     def _parse_payloads(self) -> List[dict]:
-        payloads = self._load_payloads(self.vuln.value)
-        if not payloads:
-            return []
-        pattern_payloads = payloads.get(self.pattern.value, [])
+        pattern_payloads = self.payloads.get(self.pattern.value, [])
         if self.dbms:
             return [payload for payload in pattern_payloads if payload.get("dbms") == self.dbms]
-        return pattern_payloads.insert("")
+        return pattern_payloads
+    
+    def _compile_sql_patterns(self):
+        raw_patterns = Util.load_json('handler/config/sql_error.json')
+        compiled_patterns = {}
 
-    async def _send_payloads(self, payloads: List[str], type: str="client_side"):
+        for dbms_type, dbms_info in raw_patterns.items():
+            patterns = dbms_info.get("patterns", [])
+            compiled_patterns[dbms_type] = {
+                "patterns": [
+                    re.compile(
+                        pattern,
+                        re.IGNORECASE) for pattern in patterns]}
+        return compiled_patterns
+    def _get_context(self, text: str, pattern: str, window: int = 50) -> str:
+        pos = text.find(pattern)
+        return text[max(0, pos - window):min(len(text),
+                                            pos + len(pattern) + window)]
+
+    async def _send_payloads(self, payloads: List[str], type: str="server_side"):
         if type == "server_side":
             tasks = [self.requests_handler.send_serverside(
                 url=self.url,
@@ -88,77 +86,90 @@ class AdvancedPayloadHandler:
         results = await asyncio.gather(*tasks)
         return results[0] if len(results) == 1 else results
 
-    async def _analyze_time_based(self, responses) -> List[AnalysisResult]:
+    async def __analyze_time_based(self, responses: List, payloads: List) -> List[AnalysisResult]:
         results = []
-        if not responses:
+        compare_responses = await self._send_payloads(payloads)  # 비교 대상 응답
+
+        if not responses or not compare_responses:
             return results
 
-        times = [response.response_time for response in responses]
-        avg_response_time = sum(times) / len(times) if times else 0
-        detected = avg_response_time > 10
+        min_len = min(len(responses), len(compare_responses))  # 비교 가능한 응답 개수
 
-        for response in responses:
+        for i in range(min_len):  
+            response_time_avg = mean([responses[i].response_time, compare_responses[i].response_time])  # 같은 인덱스끼리 평균
+            detected = response_time_avg > 10  # 평균 response_time이 10초 이상이면 True
+
+            first_response = responses[i]  # 해당 인덱스의 응답 데이터 사용
+
             results.append(
                 AnalysisResult(
                     detected=detected,
                     DetailVuln="Time-Based SQL Injection",
-                    evidence=f"Average Response Time: {avg_response_time:.2f} seconds",
-                    payload=response.payload if detected else None,
-                    confidence=100
+                    evidence=f"Payload: {first_response.payload}, Avg Response Time: {response_time_avg:.2f}s",
+                    payload=first_response.payload if detected else None,
+                    confidence=100 if detected else 0
                 )
             )
+
         return results
 
 
-    async def _analyze_boolean_based(self, responses) -> List[AnalysisResult]:
+    async def __analyze_boolean_based(self, responses) -> List[AnalysisResult]:
         results = []
         if not responses:
             return results
 
-
         normal_response = responses[0].response_text
 
         for response in responses[1:]:
-            detected = len(response.response_text) - len(normal_response) > 50
+            detected = abs(len(response.response_text) - len(normal_response)) > 500
             results.append(
                 AnalysisResult(
                     detected=detected,
                     DetailVuln="Boolean-Based SQL Injection",
-                    evidence=f"Payload: {response.payload}" if detected else None,
+                    evidence=f"Shows a significant difference from normal input" if detected else None,
                     payload=response.payload if detected else None,
                     confidence=90 if detected else 10
                 )
             )
         return results
 
-
-    async def _analyze_error_based(self, responses) -> List[AnalysisResult]:
-        results = []
+    async def __analyze_error_based(self, responses) -> List[AnalysisResult]:
+        results = []    
         if not responses:
             return results
-
+        sql_patterns = self._compile_sql_patterns()
         for response in responses:
-            detected = "error" in response.response_text.lower()
-            results.append(
-                AnalysisResult(
-                    detected=detected,
-                    DetailVuln="Error-Based SQL Injection",
-                    evidence="Error message observed in response" if detected else None,
-                    payload=response.payload if detected else None,
-                    confidence=100
-                )
-            )
+            for dbms_type, dbms_info in sql_patterns.items():
+                for pattern in dbms_info["patterns"]:
+                    if match := pattern.search(response.response_text):
+                        context = self._get_context(response.response_text, match.group(0))
+                        detected = True
+                        results.append(
+                        AnalysisResult(
+                            detected=detected,
+                            DetailVuln="Error-Based SQL Injection",
+                            evidence="Error message observed in response" if detected else None,
+                            payload=response.payload if detected else None,
+                            context=context,
+                            confidence=100 if detected else 60
+                        )
+                    ) 
+                        break
+                    else:
+                        detected = False
         return results
 
     async def _advanced_sqli(self):
         payloads = [payload["payload"] for payload in self._parse_payloads()]
         responses = await self._send_payloads(payloads)
+        
         if self.pattern == DetailVuln.TIME_BASED_SQLI:
-            return await self._analyze_time_based(responses)
+            return await self.__analyze_time_based(responses, payloads)
         elif self.pattern == DetailVuln.BOOLEAN_BASED_SQLI:
-            return await self._analyze_boolean_based(responses)
+            return await self.__analyze_boolean_based(responses)
         elif self.pattern == DetailVuln.ERROR_BASED_SQLI:
-            return await self._analyze_error_based(responses)
+            return await self.__analyze_error_based(responses)
 
     async def run(self) -> List[AnalysisResult]:
         if self.vuln == Vuln.SQLI:
@@ -169,7 +180,6 @@ class AdvancedPayloadHandler:
             pass
         return []
 
-
 if __name__ == "__main__":
     test_url = "http://localhost/login.php"
     test_params = {"name": ""}
@@ -177,7 +187,7 @@ if __name__ == "__main__":
 
     fuzzer = AdvancedPayloadHandler(
         vuln=Vuln.SQLI,
-        pattern=DetailVuln.BOOLEAN_BASED_SQLI,
+        pattern=DetailVuln.TIME_BASED_SQLI,
         url=test_url,
         method=test_method,
         params=test_params,
@@ -185,9 +195,9 @@ if __name__ == "__main__":
     )
     results = asyncio.run(fuzzer.run())
     for result in results:
-        print(f"{result.detected}")
-        print(f"{result.DetailVuln}")
-        print(f"{result.evidence}")
-        print(f"{result.payload}")
-        print(f"{result.confidence}")
-
+        print(f"Detected: {result.detected}")
+        print(f"Detail_Vuln: {result.DetailVuln}")
+        print(f"evidence: {result.evidence}")
+        print(f"payload: {result.payload}")
+        print(f"context: {result.context}")
+        print(f"confidence: {result.confidence}")
