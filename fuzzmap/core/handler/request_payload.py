@@ -2,9 +2,7 @@ import asyncio
 import aiohttp
 import time
 from typing import Any, Dict, List, Optional
-from dataclasses import dataclass, asdict
-import json  # <-- JSON 출력을 위해 추가
-
+from dataclasses import dataclass
 from playwright.async_api import async_playwright, Dialog, Response
 
 from fuzzmap.core.logging.log import Logger
