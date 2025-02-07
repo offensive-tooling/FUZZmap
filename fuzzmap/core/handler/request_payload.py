@@ -2,8 +2,8 @@ import asyncio
 import aiohttp
 import time
 from typing import Any, Dict, List, Optional
-
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
+import json  # <-- JSON 출력을 위해 추가
 
 from playwright.async_api import async_playwright, Dialog, Response
 
@@ -110,7 +110,7 @@ class RequestPayloadHandler:
                             status = resp.status
                     else:
                         async with session.request(
-                            method.upper(), url, json=current_params, headers=headers
+                            method.upper(), url, data=current_params, headers=headers
                         ) as resp:
                             text = await resp.text()
                             status = resp.status
@@ -220,6 +220,7 @@ class RequestPayloadHandler:
 
                     async def handle_response(response: Response) -> None:
                         nonlocal captured_response
+
                         if response.url == final_url:
                             captured_response = response
 
@@ -245,30 +246,35 @@ class RequestPayloadHandler:
                         )
                         final_url = f"{url}?{query_string}"
                         await page.goto(final_url, timeout=int(timeout * 1000))
+
+                        # 페이지 내용 가져오기
+                        content = await page.content()
+                        response_text = content
+                        response_length = len(content)
+
+                        # 네트워크 응답 상태 코드 가져오기
+                        if captured_response:
+                            status_code = captured_response.status
+                        else:
+                            status_code = 200  # fallback
+
                     elif method_upper == "POST":
                         # POST 요청
                         final_url = url
                         post_data = current_params
 
-                        # Playwright의 request API를 사용하여 POST 요청
+                        # Playwright의 request API를 사용하여 POST 요청 먼저 실행
                         captured_response = await context.request.post(
-                            final_url, data=post_data, timeout=int(timeout * 1000)
+                            final_url, form=post_data, timeout=int(timeout * 1000)
                         )
+                        captured_content = await captured_response.text()
+                        await page.set_content(captured_content)
 
-                        # 페이지에 임시로 HTML을 로드하여 alert을 감지하기 위해 blank 페이지로 이동
-                        await page.goto("about:blank", timeout=int(timeout * 1000))
-
-                    # 페이지 내용 가져오기
-                    content = await page.content()
-                    response_text = content  # 전체 내용 저장
-                    response_length = len(content)
-
-                    # 네트워크 응답으로부터 상태 코드 가져오기
-                    if captured_response:
+                        content = await page.content()
+                        response_text = content
+                        response_length = len(content)
+                        
                         status_code = captured_response.status
-                    else:
-                        # 응답이 캡처되지 않았을 경우
-                        status_code = 200  # 기본값 설정 (실제로는 정확하지 않을 수 있음)
 
                     await page.close()
 
@@ -358,7 +364,7 @@ class RequestPayloadHandler:
 
     @classmethod
     def insert_payload(cls, params: Dict[str, str], payload: str) -> Dict[str, str]:
-        current_params = params.copy()  # 원본 파라미터를 복사하여 변경하지 않음
+        current_params = params.copy()  
 
         # 값이 빈 모든 키에 페이로드 삽입
         empty_keys = [k for k, v in current_params.items() if not v]
@@ -396,6 +402,7 @@ class RequestPayloadHandler:
         cls._logger.debug(f"Set User-Agent to: {headers['User-Agent']}")
         return headers
 
+
 if __name__ == "__main__":
     import sys
 
@@ -404,11 +411,15 @@ if __name__ == "__main__":
         특정 사이트에 하나 또는 여러 개의 페이로드를 테스트합니다.
         """
         # 테스트할 URL과 파라미터 설정
-        test_url = "http://php.testsparker.com/artist.php"  
-        params = {"id": ""}  
-        method = "GET"  # 요청 메서드 (GET 또는 POST)
-        payloads1 = [ "' OR '1'='1' --", "\"' AND IF(1=1,SLEEP(5),0)--"] 
-        payloads2 = ["'\"<script>alert({{7*7}})</script><!---", "<img src=x onerror='javascript:alert(6)'>"]
+        test_url = "http://localhost/login.php"
+        params = {"name": "", "password":""}
+        method = "post"  # 요청 메서드 (GET 또는 POST)
+        payloads1 = ["' OR '1'='1' --", "\"' AND IF(1=1,SLEEP(5),0)--"]
+        payloads2 = [
+            "'\"<script>alert({{7*7}})</script><!---",
+            "<img src=x onerror='javascript:alert(6)'>"
+        ]
+
         try:
             # 서버사이드 테스트
             print("\n=== 서버사이드 테스트 시작 ===")
@@ -423,7 +434,7 @@ if __name__ == "__main__":
                 print(f"Status Code: {result.status_code}")
                 print(f"Response Time: {result.response_time:.2f}s")
                 print(f"Response Length: {result.response_length}")
-                print(f"Response Text: {result.response_text[:100]}...")  # 응답 텍스트 일부 출력
+                print(f"Response Text: {result.response_text[:1000]}...")  # 응답 텍스트 일부 출력
 
             # 클라이언트사이드 테스트
             print("\n=== 클라이언트사이드 테스트 시작 ===")
@@ -440,7 +451,7 @@ if __name__ == "__main__":
                 print(f"Response Length: {result.response_length}")
                 print(f"Alert Triggered: {result.alert_triggered}")
                 print(f"Alert Message: {result.alert_message}")
-                print(f"Response Text: {result.response_text[:100]}...")  # 응답 텍스트 일부 출력
+                print(f"Response Text: {result.response_text[:1000]}...")  # 응답 텍스트 일부 출력
 
         except Exception as error:
             print(f"테스트 중 오류 발생: {error}", file=sys.stderr)
