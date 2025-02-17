@@ -5,6 +5,7 @@ from fuzzmap.core.logging.log import Logger
 from fuzzmap.core.util.util import Util
 import asyncio
 
+
 class Controller:
     def __init__(self, target: str, method: str = "GET", 
                  param: Optional[List[str]] = None, 
@@ -21,7 +22,7 @@ class Controller:
         """
         self.target = target
         self.method = method.upper()
-        self.params = param if param else []
+        self.params = params or []
         self.recon_param = recon_param
         self.max_concurrent = max_concurrent
         self.logger = Logger()
