@@ -1,5 +1,4 @@
 import time
-import gc
 import re
 import asyncio
 from typing import Dict, List, Optional
@@ -64,38 +63,19 @@ class CommonPayloadHandler:
                                  if not any(v['type'] in self.CLIENTSIDE_VULN_TYPES 
                                           for v in p.get('vulnerabilities', []))]
 
-            # 모든 파라미터에 대한 테스트 태스크 생성
-            param_tasks = []
-            for target_param in empty_params:
-                test_params = params.copy()
-                for param_name in empty_params:
-                    if param_name == target_param:
-                        test_params[param_name] = ""
-                    else:
-                        test_params[param_name] = "foo"
+            # 클라이언트사이드와 서버사이드 테스트를 동시에 실행
+            client_results, server_results = await asyncio.gather(
+                self._process_clientside(url, params, clientside_payloads, method, empty_params),
+                self._process_serverside(url, params, serverside_payloads, method, empty_params)
+            )
 
-                self.logger.info(f"Preparing test for parameter '{target_param}' with params: {test_params}")
-                
-                # 각 파라미터에 대한 클라이언트사이드와 서버사이드 테스트를 하나의 태스크로 묶음
-                param_tasks.append(
-                    self._test_parameter(url, test_params, clientside_payloads, 
-                                      serverside_payloads, method, target_param)
-                )
-
-            # 모든 파라미터 테스트 동시실행
+            # 취약점이 발견된 결과만 필터링
             all_results = []
-            results = await asyncio.gather(*param_tasks, return_exceptions=True)
-            
-            # 결과 처리 및 필터링
-            for result in results:
-                if isinstance(result, Exception):
-                    self.logger.error(f"Parameter test failed with error: {result}")
-                else:
-                    # 취약점이 발견된 결과만 추가
-                    detected_results = [r for r in result if any(v.detected for v in r.vulnerabilities)]
-                    all_results.extend(detected_results)
+            for result in (client_results + server_results):
+                if any(vuln.detected for vuln in result.vulnerabilities):
+                    all_results.append(result)
 
-            self.logger.info(f"Scan completed - Total detected vulnerabilities: {len(all_results)}")
+            self.logger.info(f"Scan completed - Found vulnerabilities: {len(all_results)}")
             return all_results
 
         except Exception as e:
@@ -407,10 +387,9 @@ class ResponseAnalyzer:
 
     def check_ssti(self, response_text: str,
                    alert_message: str = None) -> List[VulnerabilityInfo]:
-        if '1879080904' in (
-                alert_message or '') or self.ssti_pattern.search(response_text):
+        if self.ssti_pattern.pattern in (alert_message or '') or self.ssti_pattern.search(response_text):
             context = self._get_context(
-                response_text, '1879080904') if '1879080904' in response_text else None
+                response_text, self.ssti_pattern.pattern) if self.ssti_pattern.pattern in response_text else None
             return [VulnerabilityInfo(
                 type="ssti",
                 pattern_type="calculation_result",
@@ -448,12 +427,12 @@ class VulnerabilityClassifier:
 """테스트"""
 if __name__ == "__main__":
     async def test():
-        # # GET 요청 테스트
-        # test_url_get = "http://localhost/login.php"
-        # params_get = {
-        #     "page": "",
-        #     "user": "admin"  # 고정값 파라미터는 스캔 생략
-        # }
+        # GET 요청 테스트
+        test_url_get = "http://php.testinvicti.com/artist.php"
+        params_get = {
+            "id": "",
+            "page": "admin"
+        }
 
         # POST 요청 테스트
         test_url_post = "http://localhost/login.php"
@@ -465,14 +444,14 @@ if __name__ == "__main__":
         try:
             common_handler = CommonPayloadHandler()
             
-            # print("\n[+] Testing GET request:")
-            # start_time = time.time()
-            # get_results = await common_handler.scan(
-            #         url=test_url_get, 
-            #         params=params_get, 
-            #         method="GET")
-            # print(f"GET 실행 시간: {time.time() - start_time:.2f}초")
-            # print_results(get_results)
+            print("\n[+] Testing GET request:")
+            start_time = time.time()
+            get_results = await common_handler.scan(
+                    url=test_url_get, 
+                    params=params_get, 
+                    method="GET")
+            print(f"GET 실행 시간: {time.time() - start_time:.2f}초")
+            print_results(get_results)
 
             print("\n[+] Testing POST request:")
             start_time = time.time()
