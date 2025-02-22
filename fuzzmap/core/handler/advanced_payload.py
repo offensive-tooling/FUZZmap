@@ -181,7 +181,7 @@ class AdvancedPayloadHandler:
 
 if __name__ == "__main__":
     test_url = "http://localhost/login.php"
-    test_params = {"name": ""}
+    test_params = {"name": "", "password": ""}
     test_method = "POST"
 
     fuzzer = AdvancedPayloadHandler(
@@ -189,8 +189,7 @@ if __name__ == "__main__":
         pattern = "error_based",
         url = test_url,
         method = test_method,
-        params = test_params,
-        dbms = "mssql"
+        params = test_params
     )
     results = asyncio.run(fuzzer.run())
     for result in results:

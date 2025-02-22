@@ -428,11 +428,11 @@ class VulnerabilityClassifier:
 if __name__ == "__main__":
     async def test():
         # GET 요청 테스트
-        test_url_get = "http://php.testinvicti.com/artist.php"
-        params_get = {
-            "id": "",
-            "page": "admin"
-        }
+        # test_url_get = "http://php.testinvicti.com/artist.php"
+        # params_get = {
+        #     "id": "",
+        #     "page": "admin"
+        # }
 
         # POST 요청 테스트
         test_url_post = "http://localhost/login.php"
@@ -444,14 +444,14 @@ if __name__ == "__main__":
         try:
             common_handler = CommonPayloadHandler()
             
-            print("\n[+] Testing GET request:")
-            start_time = time.time()
-            get_results = await common_handler.scan(
-                    url=test_url_get, 
-                    params=params_get, 
-                    method="GET")
-            print(f"GET 실행 시간: {time.time() - start_time:.2f}초")
-            print_results(get_results)
+            # print("\n[+] Testing GET request:")
+            # start_time = time.time()
+            # get_results = await common_handler.scan(
+            #         url=test_url_get, 
+            #         params=params_get, 
+            #         method="GET")
+            # print(f"GET 실행 시간: {time.time() - start_time:.2f}초")
+            # print_results(get_results)
 
             print("\n[+] Testing POST request:")
             start_time = time.time()

