@@ -582,8 +582,10 @@ if __name__ == "__main__":
             target="http://localhost/login.php",
             method="POST",
             param=["name", "password"]
+            #param=["name", "password", "db_type"] db select에 Payload가 포함되어 공격 진행 불가
         )
         results = await controller.async_run()
+        print(f"-----> results1: {results}")
         
         # 파라미터 자동 탐지 테스트
         # print("\n[*] Parameter Reconnaissance Test")
@@ -593,6 +595,7 @@ if __name__ == "__main__":
         #     recon_param=True
         # )
         # results = await controller.async_run()
+        # print(f"-----> results2: {results}")
 
         # 결과 출력
         print("\n[*] Final Results")
