@@ -1,5 +1,4 @@
 import time
-import gc
 import re
 import asyncio
 from typing import Dict, List, Optional
@@ -40,50 +39,67 @@ class ScanResult:
 
 class CommonPayloadHandler:
     def __init__(self):
-        self._payloads = Util.load_json(
-            'handler/payloads/common_payload.json')['payloads']
+        self._payloads = Util.load_json('handler/payloads/common_payload.json')['payloads']
         self._analyzer = ResponseAnalyzer(self._payloads)
         self._classifier = VulnerabilityClassifier()
         self.logger = Logger()
+        # 클라이언트사이드 스캔 취약점 타입
+        self.CLIENTSIDE_VULN_TYPES = {'xss'}
 
-    async def scan(
-            self, url: str, params: Dict[str, str], method: str = "GET"):
+    async def scan(self, url: str, params: Dict[str, str], method: str = "GET"):
         try:
-            self.logger.info(
-                f"Starting scan - URL: {url}, Parameters: {list(params.keys())}")
+            self.logger.info(f"Starting scan - URL: {url}, Parameters: {list(params.keys())}")
+            
+            empty_params = {k: v for k, v in params.items() if not v}
+            if not empty_params:
+                self.logger.info("No empty parameters to test")
+                return []
 
-            # XSS 취약점만 clientside 스캔
             clientside_payloads = [(p['payload'], p) for p in self._payloads
-                                   if any(v['type'] == 'xss' for v in p.get('vulnerabilities', []))]
+                                 if any(v['type'] in self.CLIENTSIDE_VULN_TYPES 
+                                      for v in p.get('vulnerabilities', []))]
 
             serverside_payloads = [(p['payload'], p) for p in self._payloads
-                                   if not any(v['type'] == 'xss' for v in p.get('vulnerabilities', []))]
+                                 if not any(v['type'] in self.CLIENTSIDE_VULN_TYPES 
+                                          for v in p.get('vulnerabilities', []))]
 
-            empty_params = [k for k, v in params.items() if v == ""]
-            total_results = []
+            # 클라이언트사이드와 서버사이드 테스트를 동시에 실행
+            client_results, server_results = await asyncio.gather(
+                self._process_clientside(url, params, clientside_payloads, method, empty_params),
+                self._process_serverside(url, params, serverside_payloads, method, empty_params)
+            )
 
-            for param_name in empty_params:
-                test_param = {param_name: ""}
+            # 취약점이 발견된 결과만 필터링
+            all_results = []
+            for result in (client_results + server_results):
+                if any(vuln.detected for vuln in result.vulnerabilities):
+                    all_results.append(result)
 
-                client_results, server_results = await asyncio.gather(
-                    self._process_clientside(
-                        url, test_param, clientside_payloads, method),
-                    self._process_serverside(
-                        url, test_param, serverside_payloads, method)
-                )
-
-                total_results.extend(client_results + server_results)
-
-            self.logger.info(
-                f"Scan completed - Total results: {len(total_results)}")
-            return total_results
+            self.logger.info(f"Scan completed - Found vulnerabilities: {len(all_results)}")
+            return all_results
 
         except Exception as e:
             self.logger.error(f"Scan failed with error: {str(e)}")
             return []
 
-    async def _process_serverside(self, url: str, test_param: Dict[str, str],
-                                  serverside_payloads: List, method: str) -> List[ScanResult]:
+    async def _test_parameter(self, url: str, params: Dict[str, str],
+                            clientside_payloads: List, serverside_payloads: List,
+                            method: str, target_param: str) -> List[ScanResult]:
+        """단일 파라미터에 대한 모든 테스트"""
+        try:
+            # 클라이언트사이드와 서버사이드 테스트를 동시에 실행
+            client_results, server_results = await asyncio.gather(
+                self._process_clientside(url, params, clientside_payloads, method, target_param),
+                self._process_serverside(url, params, serverside_payloads, method, target_param)
+            )
+            return client_results + server_results
+        except Exception as e:
+            self.logger.error(f"Test for parameter '{target_param}' failed: {e}")
+            raise
+
+    async def _process_serverside(self, url: str, params: Dict[str, str],
+                                serverside_payloads: List, method: str,
+                                current_param: str) -> List[ScanResult]:
         try:
             payloads_only = []
             for payload, _ in serverside_payloads:
@@ -94,7 +110,7 @@ class CommonPayloadHandler:
 
             responses = await RequestPayloadHandler.send_serverside(
                 url=url,
-                params=test_param,
+                params=params,
                 method=method,
                 payloads=payloads_only
             )
@@ -103,10 +119,10 @@ class CommonPayloadHandler:
             current_index = 0
             for payload, payload_info in serverside_payloads:
                 response_slice = responses[current_index:current_index +
-                                           (len(payload) if isinstance(payload, list) else 1)]
-
+                                        (len(payload) if isinstance(payload, list) else 1)]
+                
                 result = ScanResult(
-                    param_name=list(test_param.keys())[0],
+                    param_name=current_param,
                     payload=payload,
                     response_text=[r.response_text for r in response_slice] if isinstance(
                         payload, list) else response_slice[0].response_text,
@@ -114,26 +130,25 @@ class CommonPayloadHandler:
                         payload, list) else response_slice[0].response_time,
                     response_length=[r.response_length for r in response_slice] if isinstance(
                         payload, list) else response_slice[0].response_length,
-                    vulnerabilities=[VulnerabilityInfo(
-                        **vuln) for vuln in payload_info.get('vulnerabilities', [])]
+                    vulnerabilities=[VulnerabilityInfo(**vuln) 
+                                   for vuln in payload_info.get('vulnerabilities', [])]
                 )
 
                 analyzed_result = self._analyzer.analyze_res(result)
-                classified_result = self._classifier.classify_vuln(
-                    analyzed_result)
+                classified_result = self._classifier.classify_vuln(analyzed_result)
                 result.cleanup()
                 results.append(classified_result)
 
-                current_index += len(payload) if isinstance(payload,
-                                                            list) else 1
+                current_index += len(payload) if isinstance(payload, list) else 1
 
             return results
         except Exception as e:
             self.logger.error(f"Server-side scan failed: {str(e)}")
             return []
 
-    async def _process_clientside(self, url: str, test_param: Dict[str, str],
-                                  clientside_payloads: List, method: str) -> List[ScanResult]:
+    async def _process_clientside(self, url: str, params: Dict[str, str],
+                                clientside_payloads: List, method: str,
+                                current_param: str) -> List[ScanResult]:
         try:
             payloads_only = []
             for payload, _ in clientside_payloads:
@@ -144,7 +159,7 @@ class CommonPayloadHandler:
 
             responses = await RequestPayloadHandler.send_clientside(
                 url=url,
-                params=test_param,
+                params=params,
                 method=method,
                 payloads=payloads_only
             )
@@ -153,10 +168,10 @@ class CommonPayloadHandler:
             current_index = 0
             for payload, payload_info in clientside_payloads:
                 response_slice = responses[current_index:current_index +
-                                           (len(payload) if isinstance(payload, list) else 1)]
-
+                                        (len(payload) if isinstance(payload, list) else 1)]
+                
                 result = ScanResult(
-                    param_name=list(test_param.keys())[0],
+                    param_name=current_param,
                     payload=payload,
                     response_text=[r.response_text for r in response_slice] if isinstance(
                         payload, list) else response_slice[0].response_text,
@@ -164,22 +179,18 @@ class CommonPayloadHandler:
                         payload, list) else response_slice[0].response_time,
                     response_length=[r.response_length for r in response_slice] if isinstance(
                         payload, list) else response_slice[0].response_length,
-                    vulnerabilities=[VulnerabilityInfo(
-                        **vuln) for vuln in payload_info.get('vulnerabilities', [])],
-                    alert_triggered=any(
-                        r.alert_triggered for r in response_slice),
-                    alert_message="; ".join(
-                        filter(None, [r.alert_message for r in response_slice]))
+                    vulnerabilities=[VulnerabilityInfo(**vuln) 
+                                   for vuln in payload_info.get('vulnerabilities', [])],
+                    alert_triggered=any(r.alert_triggered for r in response_slice),
+                    alert_message="; ".join(filter(None, [r.alert_message for r in response_slice]))
                 )
 
                 analyzed_result = self._analyzer.analyze_res(result)
-                classified_result = self._classifier.classify_vuln(
-                    analyzed_result)
+                classified_result = self._classifier.classify_vuln(analyzed_result)
                 result.cleanup()
                 results.append(classified_result)
 
-                current_index += len(payload) if isinstance(payload,
-                                                            list) else 1
+                current_index += len(payload) if isinstance(payload, list) else 1
 
             return results
         except Exception as e:
@@ -244,34 +255,41 @@ class ResponseAnalyzer:
         scan_result.vulnerabilities = new_vulnerabilities
         return scan_result
 
-    def check_sqli(self, response, response_time, response_diff):
+    def check_sqli(self, response, response_time, response_diff) -> List[VulnerabilityInfo]:
+        
         vulnerabilities = []
+        seen_error_patterns = set()
 
         # error-based 체크
-        if isinstance(response, list):
-            for r in response:
-                for dbms_type, dbms_info in self.sql_patterns.items():
-                    for pattern in dbms_info["patterns"]:
-                        if match := pattern.search(r):
-                            context = self._get_context(r, match.group(0))
-                            vulnerabilities.append(VulnerabilityInfo(
-                                type="sql_injection",
-                                pattern_type="error",
-                                evidence=f"SQL error detected ({dbms_type})",
-                                context=context,
-                                detected=True
-                            ))
+        responses_to_check = response if isinstance(response, list) else [response]
+        for r in responses_to_check:
+            found_error = False  # 각 DBMS 타입별로 첫 번째 매칭만 사용
+            for dbms_type, dbms_info in self.sql_patterns.items():
+                if found_error:  # 이미 에러를 찾았다면 다음 응답으로 넘어감 
+                    break
+                for pattern in dbms_info["patterns"]:
+                    if match := pattern.search(str(r)):
+                        context = self._get_context(str(r), match.group(0))
+                        vulnerabilities.append(VulnerabilityInfo(
+                            type="sql_injection",
+                            pattern_type="error",
+                            evidence=f"SQL error detected ({dbms_type})",
+                            context=context,
+                            detected=True
+                        ))
+                        found_error = True
+                        break
 
         # time-based 체크
-        if isinstance(response_time, list):
-            for time in response_time:
-                if time > 5:
-                    vulnerabilities.append(VulnerabilityInfo(
-                        type="sql_injection",
-                        pattern_type="time_delay",
-                        evidence=f"Response delayed {time:.2f}s",
-                        detected=True
-                    ))
+        times_to_check = response_time if isinstance(response_time, list) else [response_time]
+        for time in times_to_check:
+            if time > 5:
+                vulnerabilities.append(VulnerabilityInfo(
+                    type="sql_injection",
+                    pattern_type="time_delay",
+                    evidence=f"Response delayed {time:.2f}s",
+                    detected=True
+                ))
 
         # boolean-based 체크
         if response_diff and response_diff > 500:
@@ -369,10 +387,9 @@ class ResponseAnalyzer:
 
     def check_ssti(self, response_text: str,
                    alert_message: str = None) -> List[VulnerabilityInfo]:
-        if '1879080904' in (
-                alert_message or '') or self.ssti_pattern.search(response_text):
+        if self.ssti_pattern.pattern in (alert_message or '') or self.ssti_pattern.search(response_text):
             context = self._get_context(
-                response_text, '1879080904') if '1879080904' in response_text else None
+                response_text, self.ssti_pattern.pattern) if self.ssti_pattern.pattern in response_text else None
             return [VulnerabilityInfo(
                 type="ssti",
                 pattern_type="calculation_result",
@@ -410,55 +427,64 @@ class VulnerabilityClassifier:
 """테스트"""
 if __name__ == "__main__":
     async def test():
-        test_url = "http://php.testinvicti.com/artist.php"
-        params = {
+        # GET 요청 테스트
+        test_url_get = "http://php.testinvicti.com/artist.php"
+        params_get = {
             "id": "",
-            "user": "admin"  # 고정값 파라미터는 스캔 생략
+            "page": "admin"
         }
+
+        # POST 요청 테스트
+        test_url_post = "http://localhost/login.php"
+        params_post = {
+            "name": "",
+            "password": ""
+        }
+
         try:
-            start_time = time.time()
             common_handler = CommonPayloadHandler()
-            results = await common_handler.scan(url=test_url, params=params, method="GET")
+            
+            print("\n[+] Testing GET request:")
+            start_time = time.time()
+            get_results = await common_handler.scan(
+                    url=test_url_get, 
+                    params=params_get, 
+                    method="GET")
+            print(f"GET 실행 시간: {time.time() - start_time:.2f}초")
+            print_results(get_results)
 
-            print(f"\n[+] Scan Results:")
-            for result in results:
-                # 기본 정보 출력
-                print(f"\nParameter: {result.param_name}")
-                print(
-                    f"Payload{
-                        's' if isinstance(
-                            result.payload,
-                            list) else ''}: {
-                        result.payload}")
-                print(
-                    f"Response Time{
-                        's' if isinstance(
-                            result.response_time,
-                            list) else ''}: {
-                        result.response_time}")
-                print(
-                    f"Response Length{
-                        's' if isinstance(
-                            result.response_length,
-                            list) else ''}: {
-                        result.response_length}")
-
-                # 취약점 출력
-                print(f"\nVulnerability:")
-                for vuln in result.vulnerabilities:
-                    if vuln.detected:
-                        print("=" * 15)
-                        print(f"Type: {vuln.type}")
-                        print(f"Pattern_Type: {vuln.pattern_type}")
-                        print(f"Confidence: {vuln.confidence}%")
-                        print(f"Evidence: {vuln.evidence}")
-                        if vuln.encoding_info:
-                            print(f"Encoding: {vuln.encoding_info}")
-                print("-" * 50)
-
-            print(f"\n실행 시간: {time.time() - start_time:.2f}초")
+            print("\n[+] Testing POST request:")
+            start_time = time.time()
+            post_results = await common_handler.scan(
+                url=test_url_post, 
+                params=params_post,  
+                method="POST"
+            )
+            print(f"POST 실행 시간: {time.time() - start_time:.2f}초")
+            print_results(post_results)
 
         except Exception as e:
             print(f"Error: {e}")
+
+    def print_results(results):
+        for result in results:
+            # 기본 정보 출력
+            print(f"\nParameter: {result.param_name}")
+            print(f"Payload{'s' if isinstance(result.payload, list) else ''}: {result.payload}")
+            print(f"Response Time{'s' if isinstance(result.response_time, list) else ''}: {result.response_time}")
+            print(f"Response Length{'s' if isinstance(result.response_length, list) else ''}: {result.response_length}")
+
+            # 취약점 정보 출력
+            print(f"\nVulnerability:")
+            for vuln in result.vulnerabilities:
+                if vuln.detected:
+                    print("=" * 15)
+                    print(f"Type: {vuln.type}")
+                    print(f"Pattern_Type: {vuln.pattern_type}")
+                    print(f"Confidence: {vuln.confidence}%")
+                    print(f"Evidence: {vuln.evidence}")
+                    if vuln.encoding_info:
+                        print(f"Encoding: {vuln.encoding_info}")
+            print("-" * 50)
 
     asyncio.run(test())
