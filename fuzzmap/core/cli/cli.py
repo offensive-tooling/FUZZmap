@@ -13,6 +13,13 @@ class CLI:
         """CLI 비동기 실행"""
         try:
             args = self.parser.parse_args()
+            
+            # 배너와 사용법 출력은 -h 옵션일 때만
+            if len(sys.argv) == 1 or "-h" in sys.argv or "--help" in sys.argv:
+                self.print_banner()
+                self.print_usage()
+                return
+
             controller = Controller(
                 target=args.target,
                 method=args.method,
@@ -20,8 +27,11 @@ class CLI:
                 recon_param=args.recon_param
             )
             results = await controller.async_run()
-            self.print_results(results)
+            
+            if results:
+                self.print_results(results)
             return results
+            
         except Exception as e:
             self.logger.error(f"CLI 실행 중 오류 발생: {str(e)}")
             sys.exit(1)

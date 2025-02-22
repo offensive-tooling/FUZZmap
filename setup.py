@@ -5,10 +5,10 @@ setup(
     version="0.1",
     packages=find_packages(),
     install_requires=[
-        "requests>=2.25.0",
-        "colorama>=0.4.4",
-        "tqdm>=4.65.0",
-        "urllib3>=1.26.0"
+        "aiohttp",
+        "beautifulsoup4",
+        "playwright",
+        "argparse"
     ],
     entry_points={
         "console_scripts": [
