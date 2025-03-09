@@ -19,8 +19,6 @@ class Vuln(Enum):
     SSTI = "ssti"
     UNKNOWN = "unknown"
 
-class FilePath(Enum):
-    SQLI = ""
 @dataclass
 class AnalysisResult:
     detected: bool
@@ -106,13 +104,12 @@ class AdvancedPayloadHandler:
                 AnalysisResult(
                     detected=detected,
                     detailvuln="Time-Based SQL Injection",
-                    evidence=f"Avg Response Time: {response_time_avg:.2f}s",
+                    evidence=f"Avg Response Time: {response_time_avg:.2f}s DBMS: {self.dbms}",
                     payload=responses[i].payload if detected else None,
                     confidence=100 if detected else 0
                 )
             )
         return results
-
 
     async def __analyze_boolean_based(self, responses) -> List[AnalysisResult]:
         results = []
@@ -127,9 +124,9 @@ class AdvancedPayloadHandler:
                 AnalysisResult(
                     detected=detected,
                     detailvuln="Boolean-Based SQL Injection",
-                    evidence=f"Shows a significant difference from normal input" if detected else None,
+                    evidence=f"Shows a significant difference from normal input DBMS: {self.dbms}" if detected else None,
                     payload=response.payload if detected else None,
-                    confidence=90 if detected else 10
+                    confidence=100 if detected else 0
                 )
             )
         return results
@@ -149,10 +146,10 @@ class AdvancedPayloadHandler:
                         AnalysisResult(
                             detected=detected,
                             detailvuln="Error-Based SQL Injection",
-                            evidence="Error message observed in response" if detected else None,
+                            evidence=f"Error message observed in response DBMS: {self.dbms} " if detected else None,
                             payload=response.payload if detected else None,
                             context=context,
-                            confidence=100 if detected else 60
+                            confidence=100 if detected else 0
                         )
                     )
                         break
