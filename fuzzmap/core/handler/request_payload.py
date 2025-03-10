@@ -4,7 +4,6 @@ import time
 import urllib.parse
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, asdict
-import json  # <-- JSON 출력을 위해 추가
 
 from playwright.async_api import async_playwright, Dialog, Response
 
@@ -57,20 +56,20 @@ class RequestPayloadHandler:
                     "**/*.{png,jpg,jpeg,gif,svg,css,woff,woff2}",
                     lambda route: asyncio.create_task(route.abort())
                 )
-                cls._logger.info("Playwright 초기화 및 불필요한 리소스 차단 설정 완료.")
+                # cls._logger.info("Playwright 초기화 및 불필요한 리소스 차단 설정 완료.")
 
     @classmethod
     async def _close_playwright_async(cls) -> None:
         try:
             if cls._context:
                 await cls._context.close()
-                cls._logger.info("브라우저 컨텍스트 종료.")
+                # cls._logger.info("브라우저 컨텍스트 종료.")
             if cls._browser:
                 await cls._browser.close()
-                cls._logger.info("브라우저 종료.")
+                # cls._logger.info("브라우저 종료.")
             if cls._playwright:
                 await cls._playwright.stop()
-                cls._logger.info("Playwright 인스턴스 종료.")
+                # cls._logger.info("Playwright 인스턴스 종료.")
         except Exception as error:
             cls._logger.error(f"Playwright 종료 중 오류 발생: {error}")
         finally:
@@ -110,7 +109,6 @@ class RequestPayloadHandler:
                 try:
                     if method.upper() == "GET":
                         merged_url = cls.merge_params(url, current_params)
-                        cls._logger.info(f"merged_url:{merged_url}")
                         async with session.get(merged_url, headers=headers) as resp:
                             text = await resp.text()
                             status = resp.status
@@ -254,7 +252,6 @@ class RequestPayloadHandler:
                     if method_upper == "GET":
                         # 파라미터를 쿼리 스트링으로 추가
                         merged_url = cls.merge_params(url, current_params)
-                        cls._logger.info(f"merged_url:{merged_url}")
                         final_url = merged_url
                         await page.goto(final_url, timeout=int(timeout * 1000))
 
@@ -345,9 +342,9 @@ class RequestPayloadHandler:
                 asyncio.create_task(_process_clientside_request(cls._context, payload))
                 for payload in payloads
             ]
-            cls._logger.info("클라이언트사이드 페이로드 전송 시작.")
+            # cls._logger.info("클라이언트사이드 페이로드 전송 시작.")
             responses = await asyncio.gather(*tasks, return_exceptions=True)
-            cls._logger.info("클라이언트사이드 페이로드 전송 완료.")
+            # cls._logger.info("클라이언트사이드 페이로드 전송 완료.")
 
             client_responses: List[ClientSideResponse] = []
             for response in responses:
