@@ -1,8 +1,10 @@
 import asyncio
 import aiohttp
 import time
+import urllib.parse
 from typing import Any, Dict, List, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
+
 from playwright.async_api import async_playwright, Dialog, Response
 
 from fuzzmap.core.logging.log import Logger
@@ -54,20 +56,20 @@ class RequestPayloadHandler:
                     "**/*.{png,jpg,jpeg,gif,svg,css,woff,woff2}",
                     lambda route: asyncio.create_task(route.abort())
                 )
-                cls._logger.info("Playwright 초기화 및 불필요한 리소스 차단 설정 완료.")
+                # cls._logger.info("Playwright 초기화 및 불필요한 리소스 차단 설정 완료.")
 
     @classmethod
     async def _close_playwright_async(cls) -> None:
         try:
             if cls._context:
                 await cls._context.close()
-                cls._logger.info("브라우저 컨텍스트 종료.")
+                # cls._logger.info("브라우저 컨텍스트 종료.")
             if cls._browser:
                 await cls._browser.close()
-                cls._logger.info("브라우저 종료.")
+                # cls._logger.info("브라우저 종료.")
             if cls._playwright:
                 await cls._playwright.stop()
-                cls._logger.info("Playwright 인스턴스 종료.")
+                # cls._logger.info("Playwright 인스턴스 종료.")
         except Exception as error:
             cls._logger.error(f"Playwright 종료 중 오류 발생: {error}")
         finally:
@@ -83,7 +85,7 @@ class RequestPayloadHandler:
         method: str = "GET",
         payloads: Optional[List[str]] = None,
         timeout: float = 10.0,
-        max_concurrent: int = 10
+        max_concurrent: int = 5
     ) -> List[ServerSideResponse]:
         if not payloads:
             cls._logger.error("전송할 페이로드가 없습니다.")
@@ -96,14 +98,18 @@ class RequestPayloadHandler:
         ) -> ServerSideResponse:
             async with semaphore:
                 current_params = cls.insert_payload(params, payload)
+                
+                cls._logger.info(
+                    f"[서버사이드] Sending request >> method: {method.upper()}, url: {url}, "
+                    f"payload: {payload}, final params: {current_params}"
+                )
                 headers = cls.get_headers()
                 cls._logger.debug(f"Set User-Agent to: {headers['User-Agent']}")
                 start_time = time.time()
                 try:
                     if method.upper() == "GET":
-                        async with session.get(
-                            url, params=current_params, headers=headers
-                        ) as resp:
+                        merged_url = cls.merge_params(url, current_params)
+                        async with session.get(merged_url, headers=headers) as resp:
                             text = await resp.text()
                             status = resp.status
                     else:
@@ -210,6 +216,12 @@ class RequestPayloadHandler:
                 response_length = 0
                 final_url = ""
 
+                
+                cls._logger.info(
+                    f"[클라이언트사이드] Sending request >> method: {method_upper}, url: {url}, "
+                    f"payload: {payload}, final params: {current_params}"
+                )
+                
                 try:
                     page = await context.new_page()
 
@@ -239,10 +251,8 @@ class RequestPayloadHandler:
 
                     if method_upper == "GET":
                         # 파라미터를 쿼리 스트링으로 추가
-                        query_string = "&".join(
-                            [f"{k}={v}" for k, v in current_params.items()]
-                        )
-                        final_url = f"{url}?{query_string}"
+                        merged_url = cls.merge_params(url, current_params)
+                        final_url = merged_url
                         await page.goto(final_url, timeout=int(timeout * 1000))
 
                         # 페이지 내용 가져오기
@@ -332,9 +342,9 @@ class RequestPayloadHandler:
                 asyncio.create_task(_process_clientside_request(cls._context, payload))
                 for payload in payloads
             ]
-            cls._logger.info("클라이언트사이드 페이로드 전송 시작.")
+            # cls._logger.info("클라이언트사이드 페이로드 전송 시작.")
             responses = await asyncio.gather(*tasks, return_exceptions=True)
-            cls._logger.info("클라이언트사이드 페이로드 전송 완료.")
+            # cls._logger.info("클라이언트사이드 페이로드 전송 완료.")
 
             client_responses: List[ClientSideResponse] = []
             for response in responses:
@@ -400,23 +410,44 @@ class RequestPayloadHandler:
         cls._logger.debug(f"Set User-Agent to: {headers['User-Agent']}")
         return headers
 
+    @classmethod
+    def merge_params(cls, url: str, params: Dict[str, str]) -> str:
+        parsed_url = urllib.parse.urlparse(url)
+        original_params = dict(urllib.parse.parse_qsl(parsed_url.query))
+        merged_params = {**original_params, **params}
+        new_query = urllib.parse.urlencode(merged_params)
+        new_url = urllib.parse.urlunparse(parsed_url._replace(query=new_query))
+        return new_url
 
+    
 if __name__ == "__main__":
     import sys
 
     async def test_payload():
         """
         특정 사이트에 하나 또는 여러 개의 페이로드를 테스트합니다.
+        결과는 콘솔에 출력되며, 'results.txt' 파일에도 저장됩니다.
         """
         # 테스트할 URL과 파라미터 설정
-        test_url = "http://localhost/login.php"
-        params = {"name": "", "password":""}
-        method = "post"  # 요청 메서드 (GET 또는 POST)
-        payloads1 = ["' OR '1'='1' --", "\"' AND IF(1=1,SLEEP(5),0)--"]
-        payloads2 = [
-            "'\"<script>alert({{7*7}})</script><!---",
-            "<img src=x onerror='javascript:alert(6)'>"
+        test_url = "http://localhost/index.php?db_type=oracle&type=title"
+        params = {"search": ""}
+        method = "GET"  # 요청 메서드 (GET 또는 POST)
+
+        # 서버사이드용 페이로드(예: SQL Injection 예시)
+        payloads_server = [
+            "' or 1=1 -- -;<img src=x>//",
+            "' or 1>1 -- -;<img src=x>//",
+            "' AND 1=CONVERT(int,(SELECT @@version)) -- ",
+            "' AND 1=convert(int,@@version)-- -"
         ]
+        # 클라이언트사이드용 페이로드(예: XSS 예시)
+        payloads_client = [
+            "' or 1=1 -- -;<img src=x>//",
+            "' or 1>1 -- -;<img src=x>//"
+        ]
+
+        # 결과를 저장할 텍스트 파일
+        result_filename = "results.txt"
 
         try:
             # 서버사이드 테스트
@@ -425,14 +456,8 @@ if __name__ == "__main__":
                 url=test_url,
                 params=params,
                 method=method,
-                payloads=payloads1,
+                payloads=payloads_server,
             )
-            for result in server_results:
-                print(f"\nPayload: {result.payload}")
-                print(f"Status Code: {result.status_code}")
-                print(f"Response Time: {result.response_time:.2f}s")
-                print(f"Response Length: {result.response_length}")
-                print(f"Response Text: {result.response_text[:1000]}...")  # 응답 텍스트 일부 출력
 
             # 클라이언트사이드 테스트
             print("\n=== 클라이언트사이드 테스트 시작 ===")
@@ -440,16 +465,40 @@ if __name__ == "__main__":
                 url=test_url,
                 params=params,
                 method=method,
-                payloads=payloads2,
+                payloads=payloads_client,
             )
-            for result in client_results:
-                print(f"\nPayload: {result.payload}")
-                print(f"Status Code: {result.status_code}")
-                print(f"Response Time: {result.response_time:.2f}s")
-                print(f"Response Length: {result.response_length}")
-                print(f"Alert Triggered: {result.alert_triggered}")
-                print(f"Alert Message: {result.alert_message}")
-                print(f"Response Text: {result.response_text[:1000]}...")  # 응답 텍스트 일부 출력
+
+            # 결과를 콘솔 및 파일에 저장
+            with open(result_filename, "w", encoding="utf-8") as f:
+                # 서버사이드 결과 출력
+                f.write("=== 서버사이드 테스트 결과 ===\n\n")
+                for result in server_results:
+                    output = (
+                        f"Payload: {result.payload}\n"
+                        f"Status Code: {result.status_code}\n"
+                        f"Response Time: {result.response_time:.2f}s\n"
+                        f"Response Length: {result.response_length}\n"
+                        f"Response Text (일부): {result.response_text}...\n\n"
+                    )
+                    # print(output)
+                    f.write(output)
+
+                # 클라이언트사이드 결과 출력
+                f.write("=== 클라이언트사이드 테스트 결과 ===\n\n")
+                for result in client_results:
+                    output = (
+                        f"Payload: {result.payload}\n"
+                        f"Status Code: {result.status_code}\n"
+                        f"Response Time: {result.response_time:.2f}s\n"
+                        f"Response Length: {result.response_length}\n"
+                        f"Alert Triggered: {result.alert_triggered}\n"
+                        f"Alert Message: {result.alert_message}\n"
+                        f"Response Text (일부): {result.response_text}...\n\n"
+                    )
+                    # print(output)
+                    f.write(output)
+
+            print(f"테스트 결과가 '{result_filename}' 파일에 저장되었습니다.")
 
         except Exception as error:
             print(f"테스트 중 오류 발생: {error}", file=sys.stderr)
