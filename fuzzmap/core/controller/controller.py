@@ -272,18 +272,18 @@ class Controller:
             if not vuln.detected:
                 continue
             
-            print("\nhandler: common")
-            print(f"url: {url}")
-            print(f"parameters: {list(params.keys())}")  # 모든 파라미터 표시
-            print(f"method: {method}")
-            print(f"Type: {vuln.type}")
-            print(f"Pattern_Type: {vuln.pattern_type}")
-            print(f"payload: {result.payload}")
-            print(f"Confidence: {vuln.confidence}")
-            print(f"Evidence: {vuln.evidence}")
+            print("\n\033[94mhandler: common\033[0m")
+            print(f"\033[97murl:\033[0m \033[94m{url}\033[0m")
+            print(f"\033[97mparameters:\033[0m \033[94m{list(params.keys())}\033[0m")  # 모든 파라미터 표시
+            print(f"\033[97mmethod: {method}\033[0m")
+            print(f"\033[91mType:\033[0m \033[97m{vuln.type}\033[0m")
+            print(f"\033[91mPattern_Type:\033[0m \033[97m{vuln.pattern_type}\033[0m")
+            print(f"\033[93mpayload:\033[0m \033[97m{result.payload}\033[0m")
+            print(f"\033[92mConfidence: {vuln.confidence}\033[0m")
+            print(f"\033[93mEvidence:\033[0m \033[97m{vuln.evidence}\033[0m")
             self._print_response_info(result)
             self._print_alert_info(result)
-            print("-" * 66)
+            print("\033[90m" + "-" * 66 + "\033[0m")
 
     def _print_advanced_result(self, url: str, params: Dict[str, str], 
                               method: str, result: ScanResult) -> None:
@@ -291,49 +291,49 @@ class Controller:
         if not result.detected:
             return
         
-        print("\nhandler: advanced")
-        print(f"url: {url}")
-        print(f"parameters: {list(params.keys())}")  # 모든 파라미터 표시
-        print(f"method: {method}")
-        print(f"Detail_Vuln: {result.detailvuln}")
-        print(f"payload: {result.payload}")
-        print(f"Confidence: {result.confidence}")
-        print(f"Evidence: {result.evidence}")
+        print("\n\033[95mhandler: advanced\033[0m")
+        print(f"\033[97murl:\033[0m \033[95m{url}\033[0m")
+        print(f"\033[97mparameters:\033[0m \033[95m{list(params.keys())}\033[0m")  # 모든 파라미터 표시
+        print(f"\033[97mmethod: {method}\033[0m")
+        print(f"\033[91mDetail_Vuln:\033[0m \033[97m{result.detailvuln}\033[0m")
+        print(f"\033[93mpayload:\033[0m \033[97m{result.payload}\033[0m")
+        print(f"\033[92mConfidence: {result.confidence}\033[0m")
+        print(f"\033[91mEvidence:\033[0m \033[97m{result.evidence}\033[0m")
         if result.context:
-            print(f"Context: {result.context}")
-        print("-" * 66)
+            print(f"\033[97mContext: {result.context}\033[0m")
+        print("\033[90m" + "-" * 66 + "\033[0m")
 
     def _print_response_info(self, result: ScanResult) -> None:
         """응답 정보 출력"""
         if isinstance(result.response_time, (int, float)):
-            print(f"Response_Time: {result.response_time:.2f}s")
+            print(f"\033[97mResponse_Time: {result.response_time:.2f}s\033[0m")
         elif isinstance(result.response_time, list):
-            print(f"Response_Times: {[f'{t:.2f}s' for t in result.response_time]}")
+            print(f"\033[97mResponse_Times: {[f'{t:.2f}s' for t in result.response_time]}\033[0m")
         
         if isinstance(result.response_length, int):
-            print(f"Response_Length: {result.response_length}")
+            print(f"\033[97mResponse_Length: {result.response_length}\033[0m")
         elif isinstance(result.response_length, list):
-            print(f"Response_Lengths: {result.response_length}")
+            print(f"\033[97mResponse_Lengths: {result.response_length}\033[0m")
 
     def _print_alert_info(self, result: ScanResult) -> None:
         """알림 정보 출력"""
         if hasattr(result, 'alert_triggered') and result.alert_triggered:
-            print(f"Alert_Triggered: {result.alert_triggered}")
+            print(f"\033[93mAlert_Triggered: {result.alert_triggered}\033[0m")
             if result.alert_message:
-                print(f"Alert_Message: {result.alert_message}")
+                print(f"\033[93mAlert_Message: {result.alert_message}\033[0m")
 
     def _print_final_results(self, results: Dict) -> None:
         """최종 결과 출력"""
-        print("\nFinal Arrange Result")
+        print("\n\033[96mFinal Arrange Result 😊\033[0m")
         
         if not results.get('vulnerabilities'):
-            print("No vulnerabilities detected")
+            print("\033[91mNo vulnerabilities detected 😭\033[0m")
             return
         
         # 모든 파라미터를 한 번에 처리
         all_params = list(results['vulnerabilities'].keys())
         
-        # 첫 번째 파라미터의 결과를 기준으로 출력 (동일한 결과이므로)
+        # 첫 번째 파라미터의 결과를 기준으로 출력
         first_param = all_params[0]
         param_results = results['vulnerabilities'][first_param]
         
@@ -343,26 +343,27 @@ class Controller:
         for common_result in common_results:
             for vuln in common_result.vulnerabilities:
                 if vuln.detected:
-                    print(f"\nhandler: common, advanced")
-                    print(f"url: {self.target}")
-                    print(f"parameters: {all_params}")  # 모든 파라미터 표시
-                    print(f"method: {self.method}")
-                    print(f"Type: {vuln.type}")
-                    print(f"Detected: True")
-                    print(f"Common_payload: {common_result.payload}")
-                    print(f"Common_Confidence: {vuln.confidence}")
+                    print(f"\n\033[97mhandler:\033[0m \033[94mcommon\033[0m\033[97m,\033[0m \033[95madvanced\033[0m")
+                    print(f"🎯 \033[97murl: {self.target}\033[0m")
+                    print(f"\033[97mparameters: {all_params}\033[0m")  # 모든 파라미터 표시
+                    print(f"\033[97mmethod: {self.method}\033[0m")
+                    print(f"\033[91mType:\033[0m \033[97m{vuln.type}\033[0m")
+                    print(f"💰 \033[91mDetected: True\033[0m")
+                    print(f"\033[93mCommon_payload:\033[0m \033[97m{common_result.payload}\033[0m")
+                    print(f"\033[92mCommon_Confidence: {vuln.confidence}\033[0m")
                     
                     # Advanced 결과 출력
                     if advanced_results:
                         for pattern_type, adv_results in advanced_results.items():
                             for adv_result in adv_results:
                                 if adv_result.detected:
-                                    print(f"Detail_Vuln: {adv_result.detailvuln}")
-                                    print(f"Advanced_payload: {adv_result.payload}")
-                                    print(f"Advanced_Confidence: {adv_result.confidence}")
+                                    print(f"🔍 \033[91mDetail_Vuln:\033[0m \033[97m{adv_result.detailvuln}\033[0m")
+                                    print(f"\033[93mAdvanced_payload:\033[0m \033[97m{adv_result.payload}\033[0m")
+                                    print(f"\033[92mAdvanced_Confidence: {adv_result.confidence}\033[0m")
                                     if adv_result.context:
-                                        print(f"Context: {adv_result.context}")
-                    print("-" * 66)
+                                        print(f"\033[97mContext: {adv_result.context}\033[0m")
+                                    print(f"")
+                    print("\033[90m" + "-" * 66 + "\033[0m")
 
     def _save_results(self, results: Dict, output_file: str = "scan_results.txt") -> None:
         """
@@ -504,6 +505,7 @@ class Controller:
                                     file_obj.write(f"Advanced_Confidence: {adv_result.confidence}\n")
                                     if adv_result.context:
                                         file_obj.write(f"Context: {adv_result.context}\n")
+                                    file_obj.write(f"")
                     file_obj.write("-" * 66 + "\n")
 
     async def async_run(self) -> Dict:
