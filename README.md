@@ -1,4 +1,4 @@
-# FuzzMap 
+# FUZZmap 
 
 <div align="center">
   
@@ -17,7 +17,14 @@
   <img src="https://img.shields.io/badge/%F0%9F%9B%A1%EF%B8%8F-Vulnerability%20Detection-orange" alt="Vulnerability Detection">
 </p>
 
-FuzzMap is a web application vulnerability fuzzing tool designed to detect security flaws. It identifies web application vulnerabilities through automated parameter Reconnaissance and advanced payload testing.
+FUZZmap is a web application vulnerability fuzzing tool designed to detect security flaws. It identifies web application vulnerabilities through automated parameter Reconnaissance and advanced payload testing.
+
+## 💻 FUZZmap Developers
+- [arrester](https://github.com/arrester)
+- [jhanks](https://github.com/jeongahn)
+- [mathe](https://github.com/ma4the)
+- [arecia](https://github.com/areciah)
+- [hansowon](https://github.com/hansowon)
 
 ## ✨ Features
 
@@ -163,10 +170,10 @@ Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the
 
 ## 🔔 Disclaimer
 
-FuzzMap is designed for legitimate security testing with proper authorization. Always ensure you have permission before testing any website or application.
+FUZZmap is designed for legitimate security testing with proper authorization. Always ensure you have permission before testing any website or application.
 
 ---
 
 <div align="center">
-  <b>FuzzMap - Slogan (Coming Soon)</b>
+  <b>FUZZmap - Slogan (Coming Soon)</b>
 </div>
