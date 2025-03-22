@@ -3,8 +3,8 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fuzzmap"
-version = "0.1.0"
+name = "FUZZmap"
+version = "0.1.4"
 description = "FUZZmap is a web application vulnerability fuzzing tool designed to detect security flaws. It identifies web application vulnerabilities through automated parameter Reconnaissance and advanced payload testing."
 readme = "README.md"
 authors = [
