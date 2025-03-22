@@ -42,7 +42,7 @@ FUZZmap은 취약점을 탐지하는 웹 애플리케이션 취약점 퍼징 도
 ### pip
 ```bash
 # 설치
-pip install fuzzmap
+pip install fuzzmap or pip install FUZZmap
 ```
 
 ### Github
