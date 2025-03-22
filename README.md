@@ -26,6 +26,8 @@ FUZZmap is a web application vulnerability fuzzing tool designed to detect secur
 - [arecia](https://github.com/areciah)
 - [hansowon](https://github.com/hansowon)
 
+`Korean README is available here [README-KR.md](fuzzmap/doc/translations/README-KR.md)`
+
 ## ✨ Features
 
 - **Parameter Reconnaissance**
