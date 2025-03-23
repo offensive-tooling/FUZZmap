@@ -18,6 +18,8 @@
 </p>
 
 FUZZmap is a web application vulnerability fuzzing tool designed to detect security flaws. It identifies web application vulnerabilities through automated parameter Reconnaissance and advanced payload testing.
+![alt text](image.png)
+
 
 ## 💻 FUZZmap Developers
 - [arrester](https://github.com/arrester)

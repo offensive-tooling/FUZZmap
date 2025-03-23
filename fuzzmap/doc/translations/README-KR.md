@@ -18,6 +18,7 @@
 </p>
 
 FUZZmap은 취약점을 탐지하는 웹 애플리케이션 취약점 퍼징 도구입니다. 자동화된 파라미터 수집과 심화 페이로드 테스트를 통해 웹 애플리케이션의 보안 취약점을 식별합니다.
+![alt text](image.png)
 
 ## 💻 FUZZmap 개발자
 - [arrester](https://github.com/arrester)
