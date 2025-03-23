@@ -123,6 +123,26 @@ class CLI:
                             print(f"      Type: {finding.get('type', 'N/A')}")
                             print(f"      Description: {finding.get('description', 'N/A')}")
 
+def main_entry():
+    """진입점 함수"""
+    try:
+        cli = CLI()
+        if sys.platform.startswith('win'):
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        
+        # 비동기 실행 처리
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(cli.async_run())
+        
+        # 종료 코드 처리
+        return 0 if results else 1
+    except KeyboardInterrupt:
+        print("\n\033[93m[!] 사용자에 의해 중단되었습니다.\033[0m")
+        return 1
+    except Exception as e:
+        print(f"\n\033[91m[!] 오류 발생: {str(e)}\033[0m")
+        return 1
+
 if __name__ == "__main__":
     c = CLI()
     c.print_banner()

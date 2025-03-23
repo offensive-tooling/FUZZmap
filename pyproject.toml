@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "FUZZmap"
-version = "0.1.6"
+version = "0.1.7"
 description = "FUZZmap is a web application vulnerability fuzzing tool designed to detect security flaws. It identifies web application vulnerabilities through automated parameter Reconnaissance and advanced payload testing."
 readme = "README.md"
 authors = [
@@ -36,4 +36,4 @@ requires-python = ">=3.7"
 "Bug Tracker" = "https://github.com/offensive-tooling/fuzzmap/issues"
 
 [project.scripts]
-fuzzmap = "fuzzmap.cli:main" 
+fuzzmap = "fuzzmap.core.cli.cli:main_entry" 
