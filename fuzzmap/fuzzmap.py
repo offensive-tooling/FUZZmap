@@ -34,7 +34,16 @@ async def main():
                 return 1
         
         # CLI 모듈 임포트
-        from fuzzmap.core.cli.cli import CLI
+        try:
+            # 패키지로 설치된 경우
+            from fuzzmap.core.cli.cli import CLI
+        except ImportError:
+            # 직접 실행하는 경우
+            try:
+                from core.cli.cli import CLI
+            except ImportError:
+                print("\033[91m[!] CLI 모듈을 찾을 수 없습니다. 패키지가 올바르게 설치되었는지 확인하세요.\033[0m")
+                sys.exit(1)
         
         # CLI 실행
         cli = CLI()

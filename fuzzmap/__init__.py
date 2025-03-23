@@ -1,14 +1,8 @@
-from .core.controller.controller import Controller
-from .core.handler.param_recon import ParamReconHandler
-from .core.handler.common_payload import CommonPayloadHandler
-from .core.handler.advanced_payload import AdvancedPayloadHandler
+"""
+FUZZmap - Web Application Vulnerability Fuzzing Tool
+"""
 
-__version__ = "0.1.8.5"
-__author__ = "Offensive Tooling"
+__version__ = "0.1.8.6"
 
-__all__ = [
-    "Controller",
-    "ParamReconHandler",
-    "CommonPayloadHandler",
-    "AdvancedPayload"
-] 
+# 진입점 함수만 노출
+from .fuzzmap import main 

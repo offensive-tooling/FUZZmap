@@ -1,6 +1,6 @@
 include LICENSE
 include README.md
-include pyproject.toml
+include requirements.txt
 recursive-include fuzzmap *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co] 

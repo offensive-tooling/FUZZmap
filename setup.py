@@ -27,7 +27,7 @@ class InstallWithPlaywright(Command):
 
 
 # 버전 정보 로드
-version = "0.1.8.5"  # 버전 업데이트
+version = "0.1.8.6"  # 버전 업데이트
 
 # 각종 설명 및 메타데이터
 description = "FUZZmap is a web application vulnerability fuzzing tool designed to detect security flaws."
@@ -41,7 +41,7 @@ if os.path.exists("README.md"):
 setup(
     name="fuzzmap",
     version=version,
-    packages=find_packages(),
+    packages=find_packages(include=['fuzzmap', 'fuzzmap.*', 'fuzzmap.core.*']),
     install_requires=[
         "requests>=2.25.0",
         "aiohttp>=3.7.4",
