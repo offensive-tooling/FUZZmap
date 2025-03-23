@@ -1,0 +1,3 @@
+"""
+FUZZmap Core Module
+""" 
