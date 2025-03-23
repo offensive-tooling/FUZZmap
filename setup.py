@@ -27,7 +27,7 @@ class InstallWithPlaywright(Command):
 
 
 # 버전 정보 로드
-version = "0.1.8.3"  # 버전 업데이트
+version = "0.1.8.4"  # 버전 업데이트
 
 # 각종 설명 및 메타데이터
 description = "FUZZmap is a web application vulnerability fuzzing tool designed to detect security flaws."
@@ -51,7 +51,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "fuzzmap=fuzzmap.cli_entry:main",  # fuzzmap 패키지 내부의 진입점으로 변경
+            "fuzzmap=fuzzmap.__main__:run_main",  # __main__.py의 run_main 함수 참조
         ],
     },
     cmdclass={
