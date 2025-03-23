@@ -3,4 +3,7 @@ include README.md
 include requirements.txt
 recursive-include fuzzmap *
 recursive-exclude * __pycache__
-recursive-exclude * *.py[co] 
+recursive-exclude * *.py[co]
+include fuzzmap/core/handler/payloads/*.json
+include fuzzmap/core/handler/payloads/**/*.json
+recursive-include fuzzmap/core *.json *.py 

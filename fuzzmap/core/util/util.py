@@ -59,10 +59,44 @@ class Util:
     @staticmethod
     def load_json(filepath: str) -> Dict:
         try:
-            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            full_path = os.path.join(base_dir, filepath)
-            with open(full_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            # fuzzmap 패키지 루트 경로 찾기
+            module_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            
+            # 여러 가능한 경로 시도
+            possible_paths = [
+                # 1. 절대 경로로 시도
+                filepath,
+                # 2. core 디렉토리 기준 경로
+                os.path.join(module_dir, "core", filepath),
+                # 3. fuzzmap 패키지 루트 기준 경로
+                os.path.join(module_dir, filepath),
+                # 4. 설치된 패키지 내 경로
+                os.path.join(module_dir, "core", "handler", "payloads", os.path.basename(filepath)),
+            ]
+            
+            # 각 경로 시도
+            for path in possible_paths:
+                if os.path.exists(path):
+                    with open(path, 'r', encoding='utf-8') as f:
+                        return json.load(f)
+            
+            # 절대 경로 출력 (디버깅용)
+            print(f"시도한 경로들: {possible_paths}")
+            print(f"현재 디렉토리: {os.getcwd()}")
+            
+            # 사이트 패키지 경로에서 페이로드 파일 찾기 시도
+            import site
+            for site_dir in site.getsitepackages():
+                fuzzmap_dir = os.path.join(site_dir, "fuzzmap")
+                if os.path.exists(fuzzmap_dir):
+                    path = os.path.join(fuzzmap_dir, "core", "handler", "payloads", os.path.basename(filepath))
+                    if os.path.exists(path):
+                        with open(path, 'r', encoding='utf-8') as f:
+                            return json.load(f)
+            
+            print(f"파일을 찾을 수 없습니다: {filepath}")
+            # 파일이 없으면 빈 객체 반환
+            return {}
         except FileNotFoundError as e:
             print(f"File not found: {filepath}")
             return {}

