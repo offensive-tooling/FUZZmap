@@ -45,6 +45,13 @@ async def main():
                 print("\033[91m[!] CLI 모듈을 찾을 수 없습니다. 패키지가 올바르게 설치되었는지 확인하세요.\033[0m")
                 sys.exit(1)
         
+        # 인자가 없을 때는 배너만 표시
+        if len(sys.argv) == 1:
+            cli = CLI()
+            cli.print_banner()
+            cli.print_usage()
+            return 0
+            
         # CLI 실행
         cli = CLI()
         results = await cli.async_run()

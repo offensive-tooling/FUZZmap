@@ -12,14 +12,20 @@ class CLI:
     async def async_run(self):
         """CLI 비동기 실행"""
         try:
-            args = self.parser.parse_args()
-            
-            # 배너와 사용법 출력은 -h 옵션일 때만
+            # 인자가 없거나 도움말만 있을 때 배너 표시
             if len(sys.argv) == 1 or "-h" in sys.argv or "--help" in sys.argv:
                 self.print_banner()
-                self.print_usage()
+                # 인자가 없는 경우에만 사용법 출력 (도움말은 파서가 처리)
+                if len(sys.argv) == 1:
+                    self.print_usage()
+                    return
+                
+            args = self.parser.parse_args()
+            
+            # 대상 URL이 없으면 실행하지 않음
+            if not args.target:
                 return
-
+            
             controller = Controller(
                 target=args.target,
                 method=args.method,

@@ -27,7 +27,7 @@ class InstallWithPlaywright(Command):
 
 
 # 버전 정보 로드
-version = "0.1.8.7"  # 버전 업데이트
+version = "0.1.8.8"  # 버전 업데이트
 
 # 각종 설명 및 메타데이터
 description = "FUZZmap is a web application vulnerability fuzzing tool designed to detect security flaws."
