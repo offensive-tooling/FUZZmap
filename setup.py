@@ -74,7 +74,7 @@ def main():
 
 
 # 버전 정보 로드
-version = "0.1.8.1"  # 버전 업데이트
+version = "0.1.8.2"  # 버전 업데이트
 
 # 각종 설명 및 메타데이터
 description = "FUZZmap is a web application vulnerability fuzzing tool designed to detect security flaws."
@@ -86,7 +86,7 @@ if os.path.exists("README.md"):
         long_description = f.read()
 
 setup(
-    name="FUZZmap",
+    name="fuzzmap",
     version=version,
     packages=find_packages(),
     install_requires=[

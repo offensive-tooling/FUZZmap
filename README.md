@@ -44,7 +44,7 @@ Korean README is available here [README-KR.md](https://github.com/offensive-tool
 ### Using pip
 ```bash
 # Installation
-pip install fuzzmap or pip install FUZZmap
+pip install fuzzmap
 ```
 
 ### From GitHub
