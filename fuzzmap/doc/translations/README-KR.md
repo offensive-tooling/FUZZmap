@@ -84,12 +84,10 @@ async def main():
     # Test with specific parameters
     fm = Controller(target="http://target.com", method="GET", param=["target_parameter"])
     results = await fm.async_run()
-    print(results)
     
     # Test with Parameter Reconnaissance
     fm = Controller(target="http://target.com", recon_param=True)
     results = await fm.async_run()
-    print(results)
 
 asyncio.run(main())
 ```
