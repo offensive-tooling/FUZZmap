@@ -78,16 +78,15 @@ fuzzmap -t <target_url> -rp
 
 ```python
 import asyncio
-from fuzzmap import Controller
+from fuzzmap.core.controller.controller import Controller
 
 async def main():
-
-    # 특정 파라미터로 테스트
+    # Test with specific parameters
     fm = Controller(target="http://target.com", method="GET", param=["target_parameter"])
     results = await fm.async_run()
     print(results)
     
-    # 자동 파라미터 수집 후 테스트
+    # Test with Parameter Reconnaissance
     fm = Controller(target="http://target.com", recon_param=True)
     results = await fm.async_run()
     print(results)
