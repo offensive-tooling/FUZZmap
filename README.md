@@ -79,10 +79,9 @@ fuzzmap -t <target_url> -rp
 
 ```python
 import asyncio
-from fuzzmap import Controller
+from fuzzmap.core.controller.controller import Controller
 
 async def main():
-
     # Test with specific parameters
     fm = Controller(target="http://target.com", method="GET", param=["target_parameter"])
     results = await fm.async_run()
