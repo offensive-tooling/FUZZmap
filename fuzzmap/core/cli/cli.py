@@ -78,13 +78,19 @@ class CLI:
             fuzzmap -t http://testphp.vulnweb.com/listproducts.php -rp
 
         \033[95m🐍 모듈로 사용하는 경우:\033[0m
-            from fuzzmap import Controller
+            import asyncio
+            from fuzzmap.core.controller.controller import Controller
 
-            fm = Controller(target="http://testphp.vulnweb.com",method="GET",param="cat")
-            fm.run()
+            async def main():
+                # Test with specific parameters
+                fm = Controller(target="http://target.com", method="GET", param=["target_parameter"])
+                results = await fm.async_run()
+                
+                # Test with Parameter Reconnaissance
+                fm = Controller(target="http://target.com", recon_param=True)
+                results = await fm.async_run()
 
-            fm = Controller(target="http://testphp.vulnweb.com",recon_param=True)
-            fm.run()
+            asyncio.run(main())
 
         \033[95m⚙️  Options:\033[0m
             -t, --target    🎯 Target URL to scan
