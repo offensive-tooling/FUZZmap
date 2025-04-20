@@ -27,8 +27,9 @@ class ClientSideResponse:
     response_text: str
     response_time: float
     response_length: int
-    alert_triggered: bool = False
-    alert_message: str = ""
+    dialog_triggered: bool = False        
+    dialog_type: Optional[str] = None     # 'alert' | 'confirm' | 'prompt'
+    dialog_message: str = ""              
 
 
 class RequestPayloadHandler:
@@ -85,7 +86,9 @@ class RequestPayloadHandler:
         method: str = "GET",
         payloads: Optional[List[str]] = None,
         timeout: float = 10.0,
-        max_concurrent: int = 5
+        max_concurrent: int = 5,
+        user_agent: Optional[str] = None,
+        cookies: Optional[Dict[str, str]] = None,
     ) -> List[ServerSideResponse]:
         if not payloads:
             cls._logger.error("전송할 페이로드가 없습니다.")
@@ -103,8 +106,8 @@ class RequestPayloadHandler:
                     f"[서버사이드] Sending request >> method: {method.upper()}, url: {url}, "
                     f"payload: {payload}, final params: {current_params}"
                 )
-                headers = cls.get_headers()
-                cls._logger.debug(f"Set User-Agent to: {headers['User-Agent']}")
+                headers = cls.get_headers(user_agent)
+                cls._logger.info(f"Set User-Agent to: {headers['User-Agent']}")
                 start_time = time.time()
                 try:
                     if method.upper() == "GET":
@@ -158,6 +161,8 @@ class RequestPayloadHandler:
         async with aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(total=timeout)
         ) as session:
+            if cookies:
+                session.cookie_jar.update_cookies(cookies)
             tasks = [
                 asyncio.create_task(_process_serverside_request(session, payload))
                 for payload in payloads
@@ -192,12 +197,22 @@ class RequestPayloadHandler:
         method: str = "GET",
         payloads: Optional[List[str]] = None,
         timeout: float = 10.0,
-        max_concurrent: int = 10
+        max_concurrent: int = 10,
+        user_agent: Optional[str] = None,
+        cookies: Optional[Dict[str, str]] = None,
     ) -> List[ClientSideResponse]:
         if not payloads:
             cls._logger.error("전송할 페이로드가 없습니다.")
             return []
 
+        if cookies:
+            domain = urllib.parse.urlparse(url).hostname or ""
+            cookie_list = [
+                {"name": k, "value": v, "domain": domain, "path": "/"}
+                for k, v in cookies.items()
+            ]
+            await cls._context.add_cookies(cookie_list)
+            
         semaphore = asyncio.Semaphore(max_concurrent)
 
         async def _process_clientside_request(
@@ -206,14 +221,15 @@ class RequestPayloadHandler:
             async with semaphore:
                 current_params = cls.insert_payload(params, payload)
                 method_upper = method.upper()
-                headers = cls.get_headers()
-                cls._logger.debug(f"Set User-Agent to: {headers['User-Agent']}")
+                headers = cls.get_headers(user_agent)
+                cls._logger.info(f"Set User-Agent to: {headers['User-Agent']}")
                 start_time = time.time()
-                alert_triggered = False
-                alert_message = ""
+                dialog_triggered = False
+                dialog_type: Optional[str] = None
+                dialog_message = ""
                 status_code: Optional[int] = None
                 response_text = ""
-                response_length = 0
+                response_length= 0
                 final_url = ""
 
                 
@@ -238,10 +254,11 @@ class RequestPayloadHandler:
 
                     # dialog 이벤트 핸들러
                     async def handle_dialog(dialog: Dialog) -> None:
-                        nonlocal alert_triggered, alert_message
-                        if dialog.type == "alert":
-                            alert_triggered = True
-                            alert_message = dialog.message
+                        nonlocal dialog_triggered, dialog_type, dialog_message
+                        if not dialog_triggered and dialog.type in ("alert", "confirm", "prompt"):
+                            dialog_triggered = True
+                            dialog_type = dialog.type
+                            dialog_message = dialog.message
                         await dialog.dismiss()
 
                     page.on("dialog", handle_dialog)
@@ -298,8 +315,9 @@ class RequestPayloadHandler:
                         response_text=f"Timeout after {response_time:.2f}s",
                         response_time=response_time,
                         response_length=0,
-                        alert_triggered=False,
-                        alert_message="",
+                        dialog_triggered=False,
+                        dialog_type=None,
+                        dialog_message=""
                     )
                 except Exception as error:
                     end_time = time.time()
@@ -313,8 +331,9 @@ class RequestPayloadHandler:
                         response_text=f"Error: {type(error).__name__}: {str(error)}",
                         response_time=response_time,
                         response_length=0,
-                        alert_triggered=False,
-                        alert_message="",
+                        dialog_triggered=False,
+                        dialog_type=None,
+                        dialog_message=""
                     )
 
                 end_time = time.time()
@@ -326,8 +345,9 @@ class RequestPayloadHandler:
                     response_text=response_text,
                     response_time=response_time,
                     response_length=response_length,
-                    alert_triggered=alert_triggered,
-                    alert_message=alert_message,
+                    dialog_triggered=dialog_triggered,
+                    dialog_type=dialog_type,
+                    dialog_message=dialog_message,
                 )
 
         async def _initialize_playwright_if_needed() -> None:
@@ -357,9 +377,10 @@ class RequestPayloadHandler:
                             response_text=f"Error: {type(response).__name__}: {str(response)}",
                             response_time=0.0,
                             response_length=0,
-                            alert_triggered=False,
-                            alert_message="",
-                        )
+                            dialog_triggered=False,
+                            dialog_type=None,
+                            dialog_message=""
+                            )
                     )
                 else:
                     client_responses.append(response)
@@ -398,14 +419,15 @@ class RequestPayloadHandler:
         return current_params
 
     @classmethod
-    def get_headers(cls) -> Dict[str, str]:
+    def get_headers(cls, user_agent: Optional[str] = None) -> Dict[str, str]:
+        ua = user_agent if user_agent else Util.get_random_user_agent()
         headers = {
             "Accept": (
                 "text/html,application/xhtml+xml,application/xml;q=0.9,"
                 "image/webp,*/*;q=0.8"
             ),
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-            "User-Agent": Util.get_random_user_agent(),  # 랜덤 User-Agent 설정
+            "User-Agent": ua,  
         }
         cls._logger.debug(f"Set User-Agent to: {headers['User-Agent']}")
         return headers
@@ -457,6 +479,7 @@ if __name__ == "__main__":
                 params=params,
                 method=method,
                 payloads=payloads_server,
+                user_agent="qwerqwer"
             )
 
             # 클라이언트사이드 테스트
@@ -466,6 +489,7 @@ if __name__ == "__main__":
                 params=params,
                 method=method,
                 payloads=payloads_client,
+                user_agent="qwerqwer"
             )
 
             # 결과를 콘솔 및 파일에 저장
@@ -491,8 +515,9 @@ if __name__ == "__main__":
                         f"Status Code: {result.status_code}\n"
                         f"Response Time: {result.response_time:.2f}s\n"
                         f"Response Length: {result.response_length}\n"
-                        f"Alert Triggered: {result.alert_triggered}\n"
-                        f"Alert Message: {result.alert_message}\n"
+                        f"Dialog Triggered: {result.dialog_triggered}\n"     
+                        f"Dialog Type: {result.dialog_type}\n"             
+                        f"Dialog Message: {result.dialog_message}\n"         
                         f"Response Text (일부): {result.response_text}...\n\n"
                     )
                     # print(output)
