@@ -7,7 +7,7 @@
 
 **웹 애플리케이션 취약점 퍼징 도구**
 
-*현재 버전: 0.1 (SQL Injection)*
+*현재 버전: 0.2 (SQL Injection, XSS)*
 
 </div>
 
@@ -33,7 +33,7 @@ FUZZmap은 취약점을 탐지하는 웹 애플리케이션 취약점 퍼징 도
 - **공통 페이로드 검사**
 - **심화 페이로드 검사** 
   - **SQL Injection 검사** - error based, time based, boolean based를 포함한 심화 분석 (v0.1)
-  - **XSS 검사** - *(v0.2에서 심화 분석 추가 예정)*
+  - **XSS 검사** - Advanced XSS (v0.2)
   - **SSTI 검사** - *(v0.3에서 심화 분석 추가 예정)*
 - **비동기 아키텍처** - 최적화된 동시 테스트를 위한 `asyncio`와 세마포어 활용
 - **확장 가능한 프레임워크** - 향후 버전에서 새로운 취약점 유형을 쉽게 추가할 수 있도록 설계
@@ -87,7 +87,7 @@ async def main():
     
     # Test with Parameter Reconnaissance
     fm = Controller(target="http://target.com", recon_param=True)
-    results = await fm.async_run()
+results = await fm.async_run()
 
 asyncio.run(main())
 ```

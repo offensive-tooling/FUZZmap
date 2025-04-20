@@ -7,7 +7,7 @@
 
 **Web Application Vulnerability Fuzzing Tool**
 
-*Current version: 0.1 (SQL Injection)*
+*Current version: 0.2 (SQL Injection, XSS)*
 
 </div>
 
@@ -34,7 +34,7 @@ FUZZmap is a web application vulnerability fuzzing tool designed to detect secur
 - **Common Payload Testing**
 - **Advanced Payload Testing**
   - **SQL Injection Detection** - Advanced analysis including error-based, time-based, and boolean-based techniques (v0.1)
-  - **XSS Detection** - *(Advanced analysis coming in v0.2)*
+  - **XSS Detection** - Advanced analysis including advanced xss in v0.2
   - **SSTI Detection** - *(Advanced analysis coming in v0.3)*
 - **Asynchronous Architecture** - Utilizes `asyncio` and semaphores for optimized concurrent testing
 - **Expandable Framework** - Designed for easy addition of new vulnerability types in future versions
