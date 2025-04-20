@@ -8,7 +8,7 @@
     "xss": {
         "reflected": 50,
         "html_injection": 50,
-        "alert_triggered": 70
+        "dialog_triggered": 70
     },
     "ssti": {
         "calculation_result": 100
