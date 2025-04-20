@@ -83,6 +83,7 @@ class AdvancedPayloadHandler:
                 method=self.method,
                 payloads=payloads,
                 user_agent=self.user_agent
+                cookies=self.cookies
             )]
         elif type == "client_side":
             tasks = [self.requests_handler.send_clientside(
@@ -91,6 +92,7 @@ class AdvancedPayloadHandler:
                 method=self.method,
                 payloads=payloads,
                 user_agent=self.user_agent
+                cookies=self.cookies
             )]
         results = await asyncio.gather(*tasks)
         return results[0] if len(results) == 1 else results
