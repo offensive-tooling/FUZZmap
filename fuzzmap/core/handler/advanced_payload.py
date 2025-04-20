@@ -55,7 +55,6 @@ class AdvancedPayloadHandler:
         pattern_payloads = self.payloads.get(self.pattern, [])
         if self.dbms:
             return [payload for payload in pattern_payloads if payload.get("dbms") == self.dbms]
-        print(pattern_payloads)
         return pattern_payloads
     
     def _parse_xss_payloads(self) -> List[dict]:
@@ -193,7 +192,6 @@ class AdvancedPayloadHandler:
 
     async def _advanced_sqli(self):
         payloads = [payload["payload"] for payload in self._parse_sql_payloads()]
-        print(payloads)
         responses = await self._send_payloads(payloads)
         if self.pattern == DetailVuln.TIME_BASED_SQLI.value:
             return await self.__analyze_time_based(responses, payloads)
@@ -204,7 +202,6 @@ class AdvancedPayloadHandler:
     
     async def _advanced_xss(self):
         payloads = self._parse_xss_payloads()
-        print(payloads)
         responses = await self._send_payloads(payloads, type="client_side")
         if self.pattern == DetailVuln.XSS.value:
             return await self.__analyze_xss(responses)
