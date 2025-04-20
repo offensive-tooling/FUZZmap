@@ -363,8 +363,7 @@ class ResponseAnalyzer:
                 context = self._get_context(response_text, injected_tag)
 
                 encoding_status = [
-                    f"{char} is {
-                        'HTML encoded' if encoded in context else 'unfiltered'}"
+                    f"{char} is {'HTML encoded' if encoded in context else 'unfiltered'}"
                     for char, encoded in html_encoded_chars.items()
                     if char in injected_tag
                 ]
@@ -372,8 +371,7 @@ class ResponseAnalyzer:
                 vulnerabilities.append(VulnerabilityInfo(
                     type="xss",
                     pattern_type="html_injection",
-                    evidence=f"HTML tag injected {injected_tag} {
-                        '(url encoded)' if is_url_encoded else ''}",
+                    evidence=f"HTML tag injected {injected_tag} {'(url encoded)' if is_url_encoded else ''}",
                     context=context,
                     detected=True,
                     encoding_info=' | '.join(
