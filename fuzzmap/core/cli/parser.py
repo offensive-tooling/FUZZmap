@@ -17,7 +17,10 @@ class Parser:
                                 action='store_true')
         self.parser.add_argument('-v', '--verbose', help="📝 Enable verbose output", 
                                 action='store_true')
-        # 도움말 인자 수동 추가
+        self.parser.add_argument('-a', '--advanced', help="🔬 Enable advanced payload scan", 
+                                action='store_true')
+        self.parser.add_argument('-ua', '--user_agent', help="🌐 Custom User-Agent string")
+        self.parser.add_argument('-c', '--cookies', help="🍪 Cookies to include (format: name1=value1;name2=value2)")
         self.parser.add_argument('-h', '--help', help="ℹ️ Show this help message", 
                                 action='store_true')
 
@@ -41,4 +44,15 @@ class Parser:
             
         if args.param:
             args.param = [p.strip() for p in args.param.split(",")]
+            
+        # 쿠키 파싱
+        if args.cookies:
+            cookie_dict = {}
+            cookie_parts = args.cookies.split(';')
+            for part in cookie_parts:
+                if '=' in part:
+                    key, value = part.strip().split('=', 1)
+                    cookie_dict[key] = value
+            args.cookies = cookie_dict
+            
         return args 

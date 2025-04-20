@@ -29,6 +29,9 @@ class Controller:
     def __init__(self, target: str, method: str = "GET", 
                  param: Optional[List[str]] = None, 
                  recon_param: bool = False,
+                 advanced: bool = False,
+                 user_agent: Optional[str] = None,
+                 cookies: Optional[Dict[str, str]] = None,
                  max_concurrent: int = 10):
         """
         컨트롤러 초기화
@@ -37,12 +40,18 @@ class Controller:
             method: HTTP 메서드 (GET/POST)
             param: 수동으로 지정된 파라미터 목록
             recon_param: 파라미터 자동 수집 여부
+            advanced: 심화 페이로드 스캔 여부
+            user_agent: 사용자 정의 User-Agent
+            cookies: 요청에 포함할 쿠키
             max_concurrent: 최대 동시 실행 수
         """
         self.target = target
         self.method = method.upper()
         self.params = param if param else []
         self.recon_param = recon_param
+        self.advanced = advanced
+        self.user_agent = user_agent
+        self.cookies = cookies
         self.max_concurrent = max_concurrent
         self.logger = Logger()
         self.param_recon = ParamReconHandler(self.target)
@@ -84,7 +93,9 @@ class Controller:
                 scan_results = await self.common_payload.scan(
                     url=target_url,
                     params=params,  # 전체 파라미터 전달
-                    method=param.method
+                    method=param.method,
+                    user_agent=self.user_agent,
+                    cookies=self.cookies
                 )
                 
                 if scan_results:
@@ -115,6 +126,11 @@ class Controller:
     async def _advanced_scan_parameter(self, param: Param, initial_results: List[ScanResult]) -> Dict:
         """개별 파라미터 심화 스캔"""
         advanced_results = {}
+        
+        # 심화 스캔 옵션이 활성화되지 않은 경우 빈 결과 반환
+        if not self.advanced:
+            return advanced_results
+            
         try:
             target_url = Util.combine_url_with_path(param.url, param.path)
             
@@ -138,7 +154,9 @@ class Controller:
                                 pattern=pattern_value,
                                 url=target_url,
                                 method=param.method,
-                                params=params  # 전체 파라미터 전달
+                                params=params,  # 전체 파라미터 전달
+                                user_agent=self.user_agent,
+                                cookies=self.cookies
                             )
                             results = await advanced_handler.run()
                             if results and any(r.detected for r in results):
@@ -179,7 +197,9 @@ class Controller:
             common_results = await self.common_payload.scan(
                 url=target_url,
                 params=all_params,
-                method=params[0].method
+                method=params[0].method,
+                user_agent=self.user_agent,
+                cookies=self.cookies
             )
             
             if common_results:
@@ -192,19 +212,20 @@ class Controller:
                     common_results
                 )
                 
-                # SQL Injection이 발견된 경우 심화 스캔 실행
+                # SQL Injection이 발견되고 심화 스캔 옵션이 활성화된 경우 심화 스캔 실행
                 advanced_results = {}
-                for result in common_results:
-                    for vuln in result.vulnerabilities:
-                        if vuln.detected and vuln.type == "sql_injection":
-                            advanced_results = await self._advanced_scan(
-                                target_url,
-                                all_params,
-                                params[0].method
-                            )
+                if self.advanced:
+                    for result in common_results:
+                        for vuln in result.vulnerabilities:
+                            if vuln.detected and vuln.type == "sql_injection":
+                                advanced_results = await self._advanced_scan(
+                                    target_url,
+                                    all_params,
+                                    params[0].method
+                                )
+                                break
+                        if advanced_results:
                             break
-                    if advanced_results:
-                        break
                 
                 # 결과 저장
                 for param in params:
@@ -223,6 +244,11 @@ class Controller:
     async def _advanced_scan(self, url: str, params: Dict[str, str], method: str) -> Dict:
         """심화 스캔 실행"""
         advanced_results = {}
+        
+        # 심화 스캔 옵션이 활성화되지 않은 경우 빈 결과 반환
+        if not self.advanced:
+            return advanced_results
+            
         try:
             patterns = {
                 "error_based": DetailVuln.ERROR_BASED_SQLI.value,
@@ -236,7 +262,9 @@ class Controller:
                     pattern=pattern_value,
                     url=url,
                     method=method,
-                    params=params
+                    params=params,
+                    user_agent=self.user_agent,
+                    cookies=self.cookies
                 )
                 results = await advanced_handler.run()
                 if results and any(r.detected for r in results):
@@ -317,10 +345,12 @@ class Controller:
 
     def _print_alert_info(self, result: ScanResult) -> None:
         """알림 정보 출력"""
-        if hasattr(result, 'alert_triggered') and result.alert_triggered:
-            print(f"\033[93mAlert_Triggered: {result.alert_triggered}\033[0m")
-            if result.alert_message:
-                print(f"\033[93mAlert_Message: {result.alert_message}\033[0m")
+        if hasattr(result, 'dialog_triggered') and result.dialog_triggered:
+            print(f"\033[93mDialog_Triggered: {result.dialog_triggered}\033[0m")
+            if result.dialog_type:
+                print(f"\033[93mDialog_Type: {result.dialog_type}\033[0m")
+            if result.dialog_message:
+                print(f"\033[93mDialog_Message: {result.dialog_message}\033[0m")
 
     def _print_final_results(self, results: Dict) -> None:
         """최종 결과 출력"""
@@ -450,10 +480,12 @@ class Controller:
 
     def _write_alert_info(self, result: ScanResult, file_obj) -> None:
         """알림 정보 저장"""
-        if hasattr(result, 'alert_triggered') and result.alert_triggered:
-            file_obj.write(f"Alert_Triggered: {result.alert_triggered}\n")
-            if result.alert_message:
-                file_obj.write(f"Alert_Message: {result.alert_message}\n")
+        if hasattr(result, 'dialog_triggered') and result.dialog_triggered:
+            file_obj.write(f"Dialog_Triggered: {result.dialog_triggered}\n")
+            if result.dialog_type:
+                file_obj.write(f"Dialog_Type: {result.dialog_type}\n")
+            if result.dialog_message:
+                file_obj.write(f"Dialog_Message: {result.dialog_message}\n")
 
     def _write_advanced_info(self, result: ScanResult, file_obj) -> None:
         """심화 정보 저장"""
@@ -565,7 +597,8 @@ class Controller:
                 results["vulnerabilities"] = await self._scan_vulnerabilities(collected_params)
                 
                 # 결과 출력 및 저장
-                self._print_final_results(results)
+                if self.advanced:
+                    self._print_final_results(results)
                 self._save_results(results)
 
             return results
