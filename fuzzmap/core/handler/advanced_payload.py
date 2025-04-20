@@ -12,6 +12,7 @@ class DetailVuln(Enum):
     ERROR_BASED_SQLI = "error_based"
     TIME_BASED_SQLI = "time_based"
     BOOLEAN_BASED_SQLI = "boolean_based"
+    ADVANCED_XSS = "advanced"
 
 class Vuln(Enum):
     SQLI = "sqli"
@@ -30,7 +31,9 @@ class AnalysisResult:
 
 class AdvancedPayloadHandler:
     def __init__(self, vuln: Vuln, pattern: DetailVuln,
-                        url: str, method: str, params: dict, dbms: Optional[str] = None):
+                        url: str, method: str, params: dict, 
+                        dbms: Optional[str] = None, user_agent: Optional[str] = None,
+                        cookies: Optional[Dict[str, str]] = None):
         self.requests_handler = RequestPayloadHandler()
         self.vuln = vuln
         self.pattern = pattern
@@ -38,9 +41,11 @@ class AdvancedPayloadHandler:
         self.method = method
         self.params = params
         self.dbms = dbms
+        self.user_agent = user_agent
+        self.cookies = cookies
         self.payloads_mapping = {
             "sqli": "handler/payloads/sqli_payload.json",
-            "xss": "./payloads/xss_payload.json",
+            "xss": ".handler/payloads/xss_payload.json",
             "ssti": "./payloads/ssti_payload.json"
         }
         filepath = self.payloads_mapping.get(self.vuln.value)
@@ -76,14 +81,16 @@ class AdvancedPayloadHandler:
                 url=self.url,
                 params=self.params,
                 method=self.method,
-                payloads=payloads
+                payloads=payloads,
+                user_agent=self.user_agent
             )]
         elif type == "client_side":
             tasks = [self.requests_handler.send_clientside(
                 url=self.url,
                 params=self.params,
                 method=self.method,
-                payloads=payloads
+                payloads=payloads,
+                user_agent=self.user_agent
             )]
         results = await asyncio.gather(*tasks)
         return results[0] if len(results) == 1 else results
@@ -156,6 +163,23 @@ class AdvancedPayloadHandler:
                     else:
                         detected = False
         return results
+    async def __analyze_xss(self, responses) -> List[AnalysisResult]:
+        results = []
+        if not responses:
+            return results
+        
+        for response in responses:
+            detected = response.dialog_triggered
+            results.append(
+                AnalysisResult(
+                    detected=detected,
+                    detailvuln="Reflected XSS",
+                    evidence=f"{response.dialog_type} Reflected XSS Triggerd",
+                    payload=response.payload if detected else None,
+                    confidence=100 if detected else 0
+                )
+            )
+        return results
 
     async def _advanced_sqli(self):
         payloads = [payload["payload"] for payload in self._parse_payloads()]
@@ -166,27 +190,33 @@ class AdvancedPayloadHandler:
             return await self.__analyze_boolean_based(responses)
         elif self.pattern == DetailVuln.ERROR_BASED_SQLI.value:
             return await self.__analyze_error_based(responses)
+    
+    async def _advanced_xss(self):
+        payloads = [payload["payload"] for payload in self._parse_payloads()]
+        responses = await self._send_payloads(payloads, type="client_side")
+        if self.pattern == DetailVuln.ADVANCED_XSS.value:
+            return await self.__analyze_xss(responses)
 
     async def run(self) -> List[AnalysisResult]:
         if self.vuln == Vuln.SQLI:
             return await self._advanced_sqli()
         elif self.vuln == Vuln.XSS:
-            pass
+            return await self._advanced_xss()
         elif self.vuln == Vuln.SSTI:
             pass
         return []
 
 if __name__ == "__main__":
-    test_url = "http://localhost/login.php"
-    test_params = {"name": "", "password": ""}
-    test_method = "POST"
+    test_url = "http://localhost/index.php?type=title"
+    test_params = {"search": ""}
+    test_method = "GET"
 
     fuzzer = AdvancedPayloadHandler(
-        vuln = Vuln.SQLI,
-        pattern = "error_based",
+        vuln = Vuln.XSS,
+        pattern = "advanced",
         url = test_url,
         method = test_method,
-        params = test_params
+        params = test_params,
     )
     results = asyncio.run(fuzzer.run())
     for result in results:
