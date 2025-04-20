@@ -168,6 +168,28 @@ class Controller:
                                     param.method, 
                                     results
                                 )
+                    
+                    # XSS 취약점 처리 (elif가 아닌 if로 변경하여 독립적으로 처리)
+                    if vuln.detected and vuln.type == "xss":
+                        advanced_handler = AdvancedPayloadHandler(
+                            vuln=Vuln.XSS,
+                            pattern=DetailVuln.XSS.value,
+                            url=target_url,
+                            method=param.method,
+                            params=params,
+                            user_agent=self.user_agent,
+                            cookies=self.cookies
+                        )
+                        results = await advanced_handler.run()
+                        if results and any(r.detected for r in results):
+                            advanced_results["xss"] = results
+                            self._print_scan_results(
+                                "advanced", 
+                                target_url, 
+                                param.name,
+                                param.method, 
+                                results
+                            )
 
             # 결과 파일 저장
             if advanced_results:
@@ -212,21 +234,33 @@ class Controller:
                     common_results
                 )
                 
-                # SQL Injection이 발견되고 심화 스캔 옵션이 활성화된 경우 심화 스캔 실행
+                # 심화 스캔 옵션이 활성화된 경우 심화 스캔 실행
                 advanced_results = {}
                 if self.advanced:
                     for result in common_results:
                         for vuln in result.vulnerabilities:
+                            # SQL Injection 취약점 심화 스캔
                             if vuln.detected and vuln.type == "sql_injection":
-                                advanced_results = await self._advanced_scan(
+                                sql_results = await self._advanced_scan(
                                     target_url,
                                     all_params,
-                                    params[0].method
+                                    params[0].method,
+                                    vuln_type="sql_injection"
                                 )
-                                break
-                        if advanced_results:
-                            break
-                
+                                if sql_results:
+                                    advanced_results.update(sql_results)
+                            
+                            # XSS 취약점 심화 스캔 (elif가 아닌 if로 변경)
+                            if vuln.detected and vuln.type == "xss":
+                                xss_results = await self._advanced_scan(
+                                    target_url,
+                                    all_params,
+                                    params[0].method,
+                                    vuln_type="xss"
+                                )
+                                if xss_results:
+                                    advanced_results.update(xss_results)
+            
                 # 결과 저장
                 for param in params:
                     vulnerabilities[param.name] = {
@@ -241,7 +275,7 @@ class Controller:
             self.logger.error(f"Vulnerability scan error: {str(e)}")
             return vulnerabilities
 
-    async def _advanced_scan(self, url: str, params: Dict[str, str], method: str) -> Dict:
+    async def _advanced_scan(self, url: str, params: Dict[str, str], method: str, vuln_type: str = "sql_injection") -> Dict:
         """심화 스캔 실행"""
         advanced_results = {}
         
@@ -250,16 +284,39 @@ class Controller:
             return advanced_results
             
         try:
-            patterns = {
-                "error_based": DetailVuln.ERROR_BASED_SQLI.value,
-                "time_based": DetailVuln.TIME_BASED_SQLI.value,
-                "boolean_based": DetailVuln.BOOLEAN_BASED_SQLI.value
-            }
+            if vuln_type == "sql_injection":
+                patterns = {
+                    "error_based": DetailVuln.ERROR_BASED_SQLI.value,
+                    "time_based": DetailVuln.TIME_BASED_SQLI.value,
+                    "boolean_based": DetailVuln.BOOLEAN_BASED_SQLI.value
+                }
+                
+                for pattern_name, pattern_value in patterns.items():
+                    advanced_handler = AdvancedPayloadHandler(
+                        vuln=Vuln.SQLI,
+                        pattern=pattern_value,
+                        url=url,
+                        method=method,
+                        params=params,
+                        user_agent=self.user_agent,
+                        cookies=self.cookies
+                    )
+                    results = await advanced_handler.run()
+                    if results and any(r.detected for r in results):
+                        advanced_results[pattern_name] = results
+                        # 심화 스캔 결과도 한 번만 출력
+                        self._print_scan_results(
+                            "advanced",
+                            url,
+                            params,  # 전체 파라미터 전달
+                            method,
+                            results
+                        )
             
-            for pattern_name, pattern_value in patterns.items():
+            elif vuln_type == "xss":
                 advanced_handler = AdvancedPayloadHandler(
-                    vuln=Vuln.SQLI,
-                    pattern=pattern_value,
+                    vuln=Vuln.XSS,
+                    pattern=DetailVuln.XSS.value,
                     url=url,
                     method=method,
                     params=params,
@@ -268,12 +325,12 @@ class Controller:
                 )
                 results = await advanced_handler.run()
                 if results and any(r.detected for r in results):
-                    advanced_results[pattern_name] = results
-                    # 심화 스캔 결과도 한 번만 출력
+                    advanced_results["xss"] = results
+                    # 심화 스캔 결과 출력
                     self._print_scan_results(
                         "advanced",
                         url,
-                        params,  # 전체 파라미터 전달
+                        params,
                         method,
                         results
                     )
