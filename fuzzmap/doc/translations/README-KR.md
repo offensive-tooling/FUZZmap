@@ -153,12 +153,15 @@ Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the
 ## ⚙️ 명령줄 옵션
 
 ```
--t, --target    🎯 스캔할 대상 URL
--m, --method    📡 HTTP 메소드 (GET/POST)
--p, --param     🔍 테스트할 파라미터 (쉼표로 구분)
--rp, --recon    🔎 파라미터 자동 수집(정찰) 활성화
--v, --verbose   📝 상세 출력 활성화
--h, --help      ℹ️  도움말 메시지 표시
+-t, --target 🎯 스캔할 대상 URL
+-m, --method 📡 HTTP 메서드(GET/POST)
+-p, --param 🔍 테스트할 파라미터 (쉼표로 구분)
+-rp, --recon_param 🔎 파라미터 자동 수집(정찰) 활성화
+-a, --advanced 🔬 심화 페이로드 스캔 활성화
+-ua, --user_agent 🌐 사용자 지정 User Agent 문자열
+-c, --cookies 🍪 포함할 쿠키(형식: name1=value1;name2=value2)
+-v, --verbose 📝 자세한 출력 활성화
+-h, --help ℹ️ 도움말 메시지 표시
 ```
 
 ## 📝 번역

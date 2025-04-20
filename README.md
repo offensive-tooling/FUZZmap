@@ -154,12 +154,15 @@ Context: ECT NULL-- -</h2>Error: You have an error in your SQL syntax; check the
 ## ⚙️ Command Line Options
 
 ```
--t, --target    🎯 Target URL to scan
--m, --method    📡 HTTP method (GET/POST)
--p, --param     🔍 Parameters to test (comma separated)
--rp, --recon    🔎 Enable parameter reconnaissance
--v, --verbose   📝 Enable verbose output
--h, --help      ℹ️  Show help message
+-t, --target      🎯 Target URL to scan
+-m, --method      📡 HTTP method (GET/POST)
+-p, --param       🔍 Parameters to test (comma separated)
+-rp, --recon_param 🔎 Enable parameter reconnaissance
+-a, --advanced    🔬 Enable advanced payload scan
+-ua, --user_agent 🌐 Custom User-Agent string
+-c, --cookies     🍪 Cookies to include (format: name1=value1;name2=value2)
+-v, --verbose     📝 Enable verbose output
+-h, --help        ℹ️  Show this help message
 ```
 
 ## 📝 Translations
