@@ -12,7 +12,7 @@ class DetailVuln(Enum):
     ERROR_BASED_SQLI = "error_based"
     TIME_BASED_SQLI = "time_based"
     BOOLEAN_BASED_SQLI = "boolean_based"
-    ADVANCED_XSS = "advanced"
+    XSS = "normal"
 
 class Vuln(Enum):
     SQLI = "sqli"
@@ -196,7 +196,7 @@ class AdvancedPayloadHandler:
     async def _advanced_xss(self):
         payloads = [payload["payload"] for payload in self._parse_payloads()]
         responses = await self._send_payloads(payloads, type="client_side")
-        if self.pattern == DetailVuln.ADVANCED_XSS.value:
+        if self.pattern == DetailVuln.XSS.value:
             return await self.__analyze_xss(responses)
 
     async def run(self) -> List[AnalysisResult]:
@@ -215,7 +215,7 @@ if __name__ == "__main__":
 
     fuzzer = AdvancedPayloadHandler(
         vuln = Vuln.XSS,
-        pattern = "advanced",
+        pattern = "normal",
         url = test_url,
         method = test_method,
         params = test_params,
