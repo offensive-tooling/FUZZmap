@@ -30,8 +30,9 @@ class ScanResult:
     response_time: float | List[float]
     response_length: int | List[int]
     vulnerabilities: List[VulnerabilityInfo]
-    alert_triggered: bool = False
-    alert_message: str = ""
+    dialog_triggered: bool = False
+    dialog_type: Optional[str] = None
+    dialog_message: str = ""
 
     def cleanup(self):
         self.response_text = None
@@ -173,8 +174,9 @@ class CommonPayloadHandler:
                     response_length=self._process_response(response_slice, payload, 'response_length'),
                     vulnerabilities=[VulnerabilityInfo(**vuln) 
                                    for vuln in payload_info.get('vulnerabilities', [])],
-                    alert_triggered=any(r.alert_triggered for r in response_slice),
-                    alert_message="; ".join(filter(None, [r.alert_message for r in response_slice]))
+                    dialog_triggered=any(r.dialog_triggered for r in response_slice),
+                    dialog_type=next((r.dialog_type for r in response_slice if r.dialog_triggered), None),
+                    dialog_message="; ".join(filter(None, [r.dialog_message for r in response_slice if r.dialog_triggered]))
                 )
 
                 analyzed_result = self._analyzer.analyze_res(result, payload_info)
@@ -253,11 +255,11 @@ class ResponseAnalyzer:
                 detections = self.check_xss(
                     scan_result.response_text,
                     scan_result.payload,
-                    scan_result.alert_triggered)
+                    scan_result.dialog_triggered)
                 new_vulnerabilities.extend(detections)
             elif vuln.type == "ssti":
                 detections = self.check_ssti(
-                    scan_result.response_text, scan_result.alert_message)
+                    scan_result.response_text, scan_result.dialog_message)
                 new_vulnerabilities.extend(detections)
 
         scan_result.vulnerabilities = new_vulnerabilities
@@ -312,14 +314,14 @@ class ResponseAnalyzer:
             VulnerabilityInfo(type="sql_injection", detected=False)]
 
     def check_xss(self, response_text: str, payload: str,
-                  alert_triggered: bool = False) -> List[VulnerabilityInfo]:
+                  dialog_triggered: bool = False) -> List[VulnerabilityInfo]:
         vulnerabilities = []
 
-        if alert_triggered:
+        if dialog_triggered:
             vulnerabilities.append(VulnerabilityInfo(
                 type="xss",
-                pattern_type="alert_triggered",
-                evidence="JavaScript alert triggered",
+                pattern_type="dialog_triggered",
+                evidence="JavaScript dialog triggered",
                 detected=True
             ))
 
@@ -393,8 +395,8 @@ class ResponseAnalyzer:
             VulnerabilityInfo(type="xss", detected=False)]
 
     def check_ssti(self, response_text: str,
-                   alert_message: str = None) -> List[VulnerabilityInfo]:
-        if self.ssti_pattern.pattern in (alert_message or '') or self.ssti_pattern.search(response_text):
+                   dialog_message: str = None) -> List[VulnerabilityInfo]:
+        if self.ssti_pattern.pattern in (dialog_message or '') or self.ssti_pattern.search(response_text):
             context = self._get_context(
                 response_text, self.ssti_pattern.pattern) if self.ssti_pattern.pattern in response_text else None
             return [VulnerabilityInfo(

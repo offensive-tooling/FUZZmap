@@ -165,6 +165,7 @@ class AdvancedPayloadHandler:
                     else:
                         detected = False
         return results
+
     async def __analyze_xss(self, responses) -> List[AnalysisResult]:
         results = []
         if not responses:
@@ -176,8 +177,9 @@ class AdvancedPayloadHandler:
                 AnalysisResult(
                     detected=detected,
                     detailvuln="Reflected XSS",
-                    evidence=f"{response.dialog_type} Reflected XSS Triggerd",
+                    evidence=f"{response.dialog_type} Reflected XSS Triggered" if detected else None,
                     payload=response.payload if detected else None,
+                    context=response.dialog_message if detected and response.dialog_message else None,
                     confidence=100 if detected else 0
                 )
             )
