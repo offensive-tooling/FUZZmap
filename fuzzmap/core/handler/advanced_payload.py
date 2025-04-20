@@ -51,11 +51,17 @@ class AdvancedPayloadHandler:
         filepath = self.payloads_mapping.get(self.vuln.value)
         self.payloads = Util.load_json(filepath)
 
-    def _parse_payloads(self) -> List[dict]:
+    def _parse_sql_payloads(self) -> List[dict]:
         pattern_payloads = self.payloads.get(self.pattern, [])
         if self.dbms:
             return [payload for payload in pattern_payloads if payload.get("dbms") == self.dbms]
+        print(pattern_payloads)
         return pattern_payloads
+    
+    def _parse_xss_payloads(self) -> List[dict]:
+        pattern_payload = self.payloads.get(self.pattern, {})
+        payloads = pattern_payload['payloads']
+        return payloads
     
     def _compile_sql_patterns(self):
         raw_patterns = Util.load_json('handler/config/sql_error.json')
@@ -176,15 +182,17 @@ class AdvancedPayloadHandler:
                 AnalysisResult(
                     detected=detected,
                     detailvuln="Reflected XSS",
-                    evidence=f"{response.dialog_type} Reflected XSS Triggerd",
+                    evidence=f"{response.dialog_type} Reflected XSS Triggered" if detected else None,
                     payload=response.payload if detected else None,
-                    confidence=100 if detected else 0
+                    context=response.dialog_message if detected and response.dialog_message else None,
+                    confidence=100 if detected else 0,
                 )
             )
         return results
 
     async def _advanced_sqli(self):
-        payloads = [payload["payload"] for payload in self._parse_payloads()]
+        payloads = [payload["payload"] for payload in self._parse_sql_payloads()]
+        print(payloads)
         responses = await self._send_payloads(payloads)
         if self.pattern == DetailVuln.TIME_BASED_SQLI.value:
             return await self.__analyze_time_based(responses, payloads)
@@ -194,7 +202,8 @@ class AdvancedPayloadHandler:
             return await self.__analyze_error_based(responses)
     
     async def _advanced_xss(self):
-        payloads = [payload["payload"] for payload in self._parse_payloads()]
+        payloads = self._parse_xss_payloads()
+        print(payloads)
         responses = await self._send_payloads(payloads, type="client_side")
         if self.pattern == DetailVuln.XSS.value:
             return await self.__analyze_xss(responses)
@@ -218,7 +227,7 @@ if __name__ == "__main__":
         pattern = "normal",
         url = test_url,
         method = test_method,
-        params = test_params,
+        params = test_params
     )
     results = asyncio.run(fuzzer.run())
     for result in results:
