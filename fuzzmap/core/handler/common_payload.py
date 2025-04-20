@@ -46,7 +46,8 @@ class CommonPayloadHandler:
         # 클라이언트사이드 스캔 취약점 타입
         self.CLIENTSIDE_VULN_TYPES = {'xss'}
 
-    async def scan(self, url: str, params: Dict[str, str], method: str = "GET"):
+    async def scan(self, url: str, params: Dict[str, str], method: str = "GET", 
+                  user_agent: Optional[str] = None, cookies: Optional[Dict[str, str]] = None):
         try:
             self.logger.info(f"Starting scan - URL: {url}, Parameters: {list(params.keys())}")
             
@@ -65,8 +66,8 @@ class CommonPayloadHandler:
 
             # 클라이언트사이드와 서버사이드 테스트를 동시에 실행
             client_results, server_results = await asyncio.gather(
-                self._process_clientside(url, params, clientside_payloads, method, empty_params),
-                self._process_serverside(url, params, serverside_payloads, method, empty_params)
+                self._process_clientside(url, params, clientside_payloads, method, empty_params, user_agent, cookies),
+                self._process_serverside(url, params, serverside_payloads, method, empty_params, user_agent, cookies)
             )
 
             # 취약점이 발견된 결과만 필터링
@@ -84,13 +85,14 @@ class CommonPayloadHandler:
 
     async def _test_parameter(self, url: str, params: Dict[str, str],
                             clientside_payloads: List, serverside_payloads: List,
-                            method: str, target_param: str) -> List[ScanResult]:
+                            method: str, target_param: str, 
+                            user_agent: Optional[str] = None, cookies: Optional[Dict[str, str]] = None) -> List[ScanResult]:
         """단일 파라미터에 대한 모든 테스트"""
         try:
             # 클라이언트사이드와 서버사이드 테스트를 동시에 실행
             client_results, server_results = await asyncio.gather(
-                self._process_clientside(url, params, clientside_payloads, method, target_param),
-                self._process_serverside(url, params, serverside_payloads, method, target_param)
+                self._process_clientside(url, params, clientside_payloads, method, target_param, user_agent, cookies),
+                self._process_serverside(url, params, serverside_payloads, method, target_param, user_agent, cookies)
             )
             return client_results + server_results
         except Exception as e:
@@ -99,7 +101,8 @@ class CommonPayloadHandler:
 
     async def _process_serverside(self, url: str, params: Dict[str, str],
                                 serverside_payloads: List, method: str,
-                                current_param: str) -> List[ScanResult]:
+                                current_param: str,
+                                user_agent: Optional[str] = None, cookies: Optional[Dict[str, str]] = None) -> List[ScanResult]:
         try:
             payloads_only = self._process_payloads(serverside_payloads)
 
@@ -107,7 +110,9 @@ class CommonPayloadHandler:
                 url=url,
                 params=params,
                 method=method,
-                payloads=payloads_only
+                payloads=payloads_only,
+                user_agent=user_agent,
+                cookies=cookies
             )
 
             results = []
@@ -140,7 +145,8 @@ class CommonPayloadHandler:
 
     async def _process_clientside(self, url: str, params: Dict[str, str],
                                 clientside_payloads: List, method: str,
-                                current_param: str) -> List[ScanResult]:
+                                current_param: str,
+                                user_agent: Optional[str] = None, cookies: Optional[Dict[str, str]] = None) -> List[ScanResult]:
         try:
             payloads_only = self._process_payloads(clientside_payloads)
 
@@ -148,7 +154,9 @@ class CommonPayloadHandler:
                 url=url,
                 params=params,
                 method=method,
-                payloads=payloads_only
+                payloads=payloads_only,
+                user_agent=user_agent,
+                cookies=cookies
             )
 
             results = []
