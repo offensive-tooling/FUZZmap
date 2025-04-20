@@ -30,7 +30,10 @@ class CLI:
                 target=args.target,
                 method=args.method,
                 param=args.param,
-                recon_param=args.recon_param
+                recon_param=args.recon_param,
+                advanced=args.advanced,
+                user_agent=args.user_agent,
+                cookies=args.cookies
             )
             results = await controller.async_run()
             
@@ -93,12 +96,15 @@ class CLI:
             asyncio.run(main())
 
         \033[95m⚙️  Options:\033[0m
-            -t, --target    🎯 Target URL to scan
-            -m, --method    📡 HTTP method (GET/POST)
-            -p, --param     🔍 Parameters to test (comma separated)
-            -rp, --recon    🔎 Enable parameter reconnaissance
-            -v, --verbose   📝 Enable verbose output
-            -h, --help      ℹ️  Show this help message
+            -t, --target      🎯 Target URL to scan
+            -m, --method      📡 HTTP method (GET/POST)
+            -p, --param       🔍 Parameters to test (comma separated)
+            -rp, --recon_param 🔎 Enable parameter reconnaissance
+            -a, --advanced    🔬 Enable advanced payload scan
+            -ua, --user_agent 🌐 Custom User-Agent string
+            -c, --cookies     🍪 Cookies to include (format: name1=value1;name2=value2)
+            -v, --verbose     📝 Enable verbose output
+            -h, --help        ℹ️  Show this help message
 
         \033[93m🔔 Note: Use responsibly and only on authorized targets\033[0m
         """
